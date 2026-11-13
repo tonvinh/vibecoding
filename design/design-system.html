@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design System</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-text);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    letter-spacing: var(--tracking-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---------- Nav kính mờ ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 10;
+    height: var(--nav-height);
+    background: var(--surface-glass);
+    -webkit-backdrop-filter: var(--glass-filter);
+    backdrop-filter: var(--glass-filter);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-inner {
+    max-width: var(--container-max); margin: 0 auto; height: 100%;
+    padding: 0 var(--gutter);
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+  }
+  .nav-brand { font-weight: var(--weight-semibold); font-size: var(--text-body); }
+  .nav-links { display: flex; gap: var(--space-6); font-size: var(--text-caption); letter-spacing: var(--tracking-caption); }
+  .nav-links a { color: var(--text-primary); opacity: .8; }
+  .nav-links a:hover { opacity: 1; text-decoration: none; }
+  .theme-toggle {
+    border: 0; background: transparent; color: var(--text-primary);
+    font: inherit; font-size: var(--text-caption); cursor: pointer; padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-pill);
+  }
+  .theme-toggle:hover { background: var(--border-subtle); }
+
+  /* ---------- Layout ---------- */
+  .container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--gutter); }
+  .hero { text-align: center; padding: var(--space-32) 0 var(--space-24); }
+  .hero h1 {
+    font-family: var(--font-display); font-size: var(--text-hero); font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight); letter-spacing: var(--tracking-hero); margin: 0 0 var(--space-4);
+  }
+  .hero p { font-size: var(--text-lead); color: var(--text-secondary); margin: 0 auto var(--space-8); max-width: 34ch; line-height: 1.38; letter-spacing: .011em; }
+  .hero .actions { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
+
+  section.block { padding: var(--section-pad-y) 0; }
+  section.block.alt { background: var(--bg-subtle); }
+  .eyebrow { font-size: var(--text-small); font-weight: var(--weight-semibold); color: var(--text-secondary); letter-spacing: var(--tracking-small); margin: 0 0 var(--space-2); }
+  .section-title {
+    font-family: var(--font-display); font-size: var(--text-h1); font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug); letter-spacing: var(--tracking-display); margin: 0 0 var(--space-12);
+  }
+  h3.sub { font-size: var(--text-h5); font-weight: var(--weight-semibold); line-height: var(--leading-heading); margin: var(--space-12) 0 var(--space-6); }
+  h3.sub:first-of-type { margin-top: 0; }
+
+  /* ---------- Bảng màu ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--space-4); }
+  .swatch { background: var(--surface-card); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); }
+  .swatch .chip { height: 88px; }
+  .swatch .meta { padding: var(--space-3); font-size: var(--text-caption); letter-spacing: var(--tracking-caption); line-height: 1.4; }
+  .swatch .meta b { display: block; font-weight: var(--weight-semibold); font-size: var(--text-small); color: var(--text-primary); }
+  .swatch .meta code { font-family: var(--font-mono); color: var(--text-secondary); font-size: 11px; }
+
+  /* ---------- Kiểu chữ ---------- */
+  .type-row { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-6); align-items: baseline; padding: var(--space-5) 0; border-top: 1px solid var(--border-subtle); }
+  .type-row:last-child { border-bottom: 1px solid var(--border-subtle); }
+  .type-row .label { font-size: var(--text-caption); color: var(--text-secondary); letter-spacing: var(--tracking-caption); line-height: 1.5; }
+  .type-row .label code { font-family: var(--font-mono); font-size: 11px; display: block; color: var(--text-tertiary); }
+  .type-row .sample { margin: 0; overflow-wrap: anywhere; }
+
+  /* ---------- Spacing & radius ---------- */
+  .scale { display: grid; gap: var(--space-3); }
+  .scale-row { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: var(--space-4); font-size: var(--text-caption); color: var(--text-secondary); }
+  .scale-bar { height: 12px; background: var(--accent); border-radius: var(--radius-xs); }
+  .radii { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-4); }
+  .radius-tile { aspect-ratio: 1; background: var(--surface-card); border: 1px solid var(--border-default); display: flex; align-items: flex-end; padding: var(--space-3); font-size: var(--text-caption); color: var(--text-secondary); }
+
+  /* ---------- Nút bấm ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: var(--button-height-md); padding: 8px 18px;
+    font: inherit; font-size: var(--text-body); letter-spacing: var(--tracking-body); line-height: 1.18;
+    border-radius: var(--radius-pill); border: 1px solid transparent; cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
+    text-decoration: none;
+  }
+  .btn:hover { text-decoration: none; }
+  .btn:focus-visible { outline: 4px solid var(--focus-ring); outline-offset: 1px; }
+  .btn-primary { background: var(--accent); color: var(--accent-text); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { background: transparent; color: var(--accent); border-color: var(--accent); }
+  .btn-secondary:hover { background: var(--accent); color: var(--accent-text); }
+  .btn-neutral { background: var(--color-gray-200); color: var(--color-gray-900); }
+  .btn-neutral:hover { background: var(--color-gray-300); }
+  .btn-dark { background: var(--text-primary); color: var(--bg); }
+  .btn-dark:hover { opacity: .85; }
+  .btn-sm { min-height: var(--button-height-sm); padding: 4px 12px; font-size: var(--text-small); letter-spacing: var(--tracking-small); }
+  .btn-lg { min-height: var(--button-height-lg); padding: 12px 24px; font-size: var(--text-body); }
+  .btn[disabled] { opacity: .42; cursor: default; pointer-events: none; }
+  .link-arrow { font-size: var(--text-body); }
+  .link-arrow::after { content: " ›"; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; margin-bottom: var(--space-6); }
+
+  /* ---------- Ô nhập ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-6); }
+  .field { position: relative; }
+  .input {
+    width: 100%; height: var(--input-height);
+    padding: 22px 16px 6px;
+    font: inherit; font-size: var(--text-body); color: var(--text-primary);
+    background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+    transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+    outline: none;
+  }
+  .input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--focus-ring); }
+  .field label {
+    position: absolute; left: 17px; top: 15px; font-size: var(--text-body); color: var(--text-tertiary);
+    pointer-events: none; transition: all var(--duration-fast) var(--ease-out);
+  }
+  .input:focus + label, .input:not(:placeholder-shown) + label { top: 7px; font-size: var(--text-caption); }
+  .field.error .input { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 6%, var(--bg-elevated)); }
+  .field .hint { font-size: var(--text-caption); color: var(--text-secondary); margin-top: var(--space-2); letter-spacing: var(--tracking-caption); }
+  .field.error .hint { color: var(--danger); }
+  select.input { appearance: none; padding-top: 6px; padding-right: 40px; background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%), linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%); background-position: calc(100% - 22px) 23px, calc(100% - 16px) 23px; background-size: 6px 6px; background-repeat: no-repeat; }
+  .checks { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: center; }
+  .check { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; }
+  .check input { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; }
+  .switch { position: relative; width: 51px; height: 31px; display: inline-block; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch span { position: absolute; inset: 0; background: var(--color-gray-300); border-radius: var(--radius-pill); transition: background var(--duration-base); cursor: pointer; }
+  .switch span::before { content: ""; position: absolute; width: 27px; height: 27px; left: 2px; top: 2px; background: #fff; border-radius: 50%; box-shadow: var(--shadow-sm); transition: transform var(--duration-base) var(--ease-out); }
+  .switch input:checked + span { background: var(--success); }
+  .switch input:checked + span::before { transform: translateX(20px); }
+  .switch input:focus-visible + span { outline: 4px solid var(--focus-ring); }
+
+  /* ---------- Thẻ ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-5); }
+  .card {
+    background: var(--surface-card); border-radius: var(--radius-lg); padding: var(--space-8);
+    display: flex; flex-direction: column; gap: var(--space-3);
+    transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+  }
+  .card:hover { transform: scale(1.01); box-shadow: var(--shadow-md); }
+  .card h4 { margin: 0; font-size: var(--text-h5); font-weight: var(--weight-semibold); line-height: var(--leading-heading); letter-spacing: var(--tracking-heading); }
+  .card p { margin: 0; color: var(--text-secondary); }
+  .card .tag { font-size: var(--text-caption); font-weight: var(--weight-semibold); color: var(--warning); letter-spacing: var(--tracking-caption); }
+  .card .art { height: 140px; border-radius: var(--radius-md); margin-top: auto; }
+  .card.feature { grid-column: 1 / -1; text-align: center; padding: var(--space-16) var(--space-8); background: var(--bg-inverse); color: var(--text-inverse); border-radius: var(--radius-xl); }
+  .card.feature h4 { font-family: var(--font-display); font-size: var(--text-h2); line-height: var(--leading-snug); }
+  .card.feature p { color: color-mix(in srgb, var(--text-inverse) 70%, transparent); font-size: var(--text-lead); }
+  .card.feature .actions { display: flex; justify-content: center; gap: var(--space-6); margin-top: var(--space-4); align-items: center; flex-wrap: wrap; }
+
+  footer { padding: var(--space-8) 0; font-size: var(--text-caption); color: var(--text-secondary); letter-spacing: var(--tracking-caption); background: var(--bg-subtle); border-top: 1px solid var(--border-subtle); }
+
+  @media (max-width: 734px) {
+    .nav-links { display: none; }
+    .type-row { grid-template-columns: 1fr; gap: var(--space-2); }
+    .hero { padding: var(--space-20) 0 var(--space-16); }
+    .card { padding: var(--space-6); }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-brand">Design System</span>
+    <div class="nav-links">
+      <a href="#colors">Màu sắc</a><a href="#type">Kiểu chữ</a><a href="#space">Khoảng cách</a>
+      <a href="#buttons">Nút bấm</a><a href="#inputs">Ô nhập</a><a href="#cards">Thẻ</a>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Đổi giao diện sáng/tối">◐ Giao diện</button>
+  </div>
+</nav>
+
+<header class="hero container">
+  <h1>Đơn giản là<br>đỉnh cao.</h1>
+  <p>Bộ token và thành phần tối giản: nhiều khoảng trắng, chữ lớn, một màu nhấn duy nhất.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="#colors">Khám phá</a>
+    <a class="btn btn-secondary" href="tokens.css">Xem tokens.css</a>
+  </div>
+</header>
+
+<!-- ================= MÀU ================= -->
+<section class="block alt" id="colors">
+  <div class="container">
+    <p class="eyebrow">01 — Màu sắc</p>
+    <h2 class="section-title">Trung tính là chủ đạo.<br>Xanh để dẫn hướng.</h2>
+
+    <h3 class="sub">Ngữ nghĩa</h3>
+    <div class="swatches" id="semantic"></div>
+
+    <h3 class="sub">Thang xám</h3>
+    <div class="swatches" id="grays"></div>
+
+    <h3 class="sub">Nhấn &amp; trạng thái</h3>
+    <div class="swatches" id="accents"></div>
+  </div>
+</section>
+
+<!-- ================= KIỂU CHỮ ================= -->
+<section class="block" id="type">
+  <div class="container">
+    <p class="eyebrow">02 — Kiểu chữ</p>
+    <h2 class="section-title">Chữ lớn, nét gọn,<br>khoảng cách chặt.</h2>
+
+    <div class="type-row"><div class="label">Hero<code>80 / 600 / -0.015em</code></div>
+      <p class="sample" style="font-family:var(--font-display);font-size:var(--text-hero);font-weight:600;line-height:var(--leading-tight);letter-spacing:var(--tracking-hero)">Ấn tượng.</p></div>
+    <div class="type-row"><div class="label">Display<code>56 / 600</code></div>
+      <p class="sample" style="font-family:var(--font-display);font-size:var(--text-display);font-weight:600;line-height:1.07;letter-spacing:var(--tracking-display)">Mạnh mẽ hơn.</p></div>
+    <div class="type-row"><div class="label">H1<code>48 / 600</code></div>
+      <p class="sample" style="font-family:var(--font-display);font-size:var(--text-h1);font-weight:600;line-height:var(--leading-snug)">Tiêu đề chính</p></div>
+    <div class="type-row"><div class="label">H2<code>40 / 600</code></div>
+      <p class="sample" style="font-family:var(--font-display);font-size:var(--text-h2);font-weight:600;line-height:var(--leading-snug)">Tiêu đề mục</p></div>
+    <div class="type-row"><div class="label">H3<code>32 / 600</code></div>
+      <p class="sample" style="font-size:var(--text-h3);font-weight:600;line-height:var(--leading-snug)">Tiêu đề phụ</p></div>
+    <div class="type-row"><div class="label">H4<code>28 / 600</code></div>
+      <p class="sample" style="font-size:var(--text-h4);font-weight:600;line-height:1.14">Tiêu đề thẻ lớn</p></div>
+    <div class="type-row"><div class="label">H5<code>24 / 600</code></div>
+      <p class="sample" style="font-size:var(--text-h5);font-weight:600;line-height:var(--leading-heading)">Tiêu đề thẻ</p></div>
+    <div class="type-row"><div class="label">Lead<code>21 / 400</code></div>
+      <p class="sample" style="font-size:var(--text-lead);line-height:1.38;letter-spacing:.011em">Đoạn mở đầu dẫn dắt người đọc vào nội dung.</p></div>
+    <div class="type-row"><div class="label">Body<code>17 / 400 / 1.47</code></div>
+      <p class="sample">Chữ thân mặc định, dễ đọc ở mọi màn hình. Giữ dòng ngắn, ý rõ ràng và để khoảng trắng làm việc của nó.</p></div>
+    <div class="type-row"><div class="label">Body semibold<code>17 / 600</code></div>
+      <p class="sample" style="font-weight:600">Nhấn mạnh trong đoạn văn.</p></div>
+    <div class="type-row"><div class="label">Small<code>14 / 400</code></div>
+      <p class="sample" style="font-size:var(--text-small);letter-spacing:var(--tracking-small);line-height:1.43">Chú thích, nhãn và thông tin bổ sung.</p></div>
+    <div class="type-row"><div class="label">Caption<code>12 / 400</code></div>
+      <p class="sample" style="font-size:var(--text-caption);letter-spacing:var(--tracking-caption);line-height:1.33;color:var(--text-secondary)">Ghi chú cuối trang, điều khoản, nhãn điều hướng.</p></div>
+    <div class="type-row"><div class="label">Link<code>--text-link</code></div>
+      <p class="sample"><a href="#type" class="link-arrow">Tìm hiểu thêm</a></p></div>
+  </div>
+</section>
+
+<!-- ================= KHOẢNG CÁCH & BO GÓC ================= -->
+<section class="block alt" id="space">
+  <div class="container">
+    <p class="eyebrow">03 — Khoảng cách &amp; bo góc</p>
+    <h2 class="section-title">Hệ lưới 4px.<br>Góc mềm, rộng rãi.</h2>
+
+    <h3 class="sub">Khoảng cách</h3>
+    <div class="scale" id="spacing"></div>
+
+    <h3 class="sub">Bo góc</h3>
+    <div class="radii" id="radii"></div>
+  </div>
+</section>
+
+<!-- ================= NÚT BẤM ================= -->
+<section class="block" id="buttons">
+  <div class="container">
+    <p class="eyebrow">04 — Nút bấm</p>
+    <h2 class="section-title">Viên thuốc, rõ ràng,<br>một hành động chính.</h2>
+
+    <h3 class="sub">Biến thể</h3>
+    <div class="btn-row">
+      <button class="btn btn-primary">Mua ngay</button>
+      <button class="btn btn-secondary">Tìm hiểu thêm</button>
+      <button class="btn btn-neutral">Để sau</button>
+      <button class="btn btn-dark">Tiếp tục</button>
+      <a class="link-arrow" href="#buttons">Liên kết văn bản</a>
+    </div>
+
+    <h3 class="sub">Kích thước</h3>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-sm">Nhỏ</button>
+      <button class="btn btn-primary">Vừa</button>
+      <button class="btn btn-primary btn-lg">Lớn</button>
+    </div>
+
+    <h3 class="sub">Trạng thái</h3>
+    <div class="btn-row">
+      <button class="btn btn-primary" disabled>Vô hiệu</button>
+      <button class="btn btn-secondary" disabled>Vô hiệu</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Ô NHẬP ================= -->
+<section class="block alt" id="inputs">
+  <div class="container">
+    <p class="eyebrow">05 — Ô nhập</p>
+    <h2 class="section-title">Nhãn nổi, viền mảnh,<br>phản hồi tức thì.</h2>
+
+    <div class="form-grid">
+      <div class="field">
+        <input class="input" id="f-name" placeholder=" " autocomplete="off">
+        <label for="f-name">Họ và tên</label>
+      </div>
+      <div class="field">
+        <input class="input" id="f-mail" type="email" placeholder=" " value="ten@vidu.com" autocomplete="off">
+        <label for="f-mail">Email</label>
+        <div class="hint">Chúng tôi sẽ gửi xác nhận tới địa chỉ này.</div>
+      </div>
+      <div class="field error">
+        <input class="input" id="f-zip" placeholder=" " value="12ab" autocomplete="off">
+        <label for="f-zip">Mã bưu chính</label>
+        <div class="hint">Mã bưu chính không hợp lệ.</div>
+      </div>
+      <div class="field">
+        <select class="input" id="f-city" aria-label="Thành phố">
+          <option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đà Nẵng</option>
+        </select>
+      </div>
+    </div>
+
+    <h3 class="sub">Lựa chọn</h3>
+    <div class="checks">
+      <label class="check"><input type="checkbox" checked> Nhận bản tin</label>
+      <label class="check"><input type="radio" name="r" checked> Giao tận nơi</label>
+      <label class="check"><input type="radio" name="r"> Nhận tại cửa hàng</label>
+      <label class="check"><span class="switch"><input type="checkbox" checked><span></span></span> Thông báo</label>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THẺ ================= -->
+<section class="block" id="cards" style="background:var(--bg-subtle)">
+  <div class="container">
+    <p class="eyebrow">06 — Thẻ</p>
+    <h2 class="section-title">Nội dung nằm trên<br>những mặt phẳng mềm.</h2>
+
+    <div class="cards">
+      <article class="card">
+        <span class="tag">Mới</span>
+        <h4>Thẻ cơ bản</h4>
+        <p>Nền trắng trên nền xám nhạt, bo góc lớn, không viền, đổ bóng chỉ khi hover.</p>
+        <a class="link-arrow" href="#cards">Xem chi tiết</a>
+      </article>
+      <article class="card">
+        <h4>Thẻ có minh hoạ</h4>
+        <p>Vùng minh hoạ dùng gradient trừu tượng thay cho hình ảnh sản phẩm.</p>
+        <div class="art" style="background:linear-gradient(135deg,#2997ff,#0071e3 45%,#1d1d1f)"></div>
+      </article>
+      <article class="card" style="background:var(--surface-card-alt);border:1px solid var(--border-subtle)">
+        <h4>Thẻ phụ</h4>
+        <p>Dùng nền thay thế cho nhóm thông tin thứ cấp.</p>
+        <div class="btn-row" style="margin:var(--space-2) 0 0"><button class="btn btn-primary btn-sm">Chọn</button><button class="btn btn-neutral btn-sm">Bỏ qua</button></div>
+      </article>
+      <article class="card feature">
+        <h4>Thẻ nổi bật.</h4>
+        <p>Nền đảo màu, chữ lớn căn giữa cho thông điệp quan trọng nhất.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#cards">Bắt đầu</a>
+          <a class="link-arrow" href="#cards" style="color:var(--color-blue-400)">Tìm hiểu thêm</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">Design system phong cách tối giản · Chỉ học phong cách, không dùng logo, hình ảnh hay nội dung của bên thứ ba.</div>
+</footer>
+
+<script>
+  const css = getComputedStyle(document.documentElement);
+  const v = n => css.getPropertyValue(n).trim();
+
+  function swatches(id, list) {
+    const el = document.getElementById(id);
+    el.innerHTML = list.map(([name, token, note]) => `
+      <div class="swatch">
+        <div class="chip" style="background:var(${token})"></div>
+        <div class="meta"><b>${name}</b><code>${token}</code>${note ? `<br>${note}` : ''}</div>
+      </div>`).join('');
+  }
+  swatches('semantic', [
+    ['Nền', '--bg'], ['Nền phụ', '--bg-subtle'], ['Chữ chính', '--text-primary'],
+    ['Chữ phụ', '--text-secondary'], ['Chữ mờ', '--text-tertiary'], ['Liên kết', '--text-link'],
+    ['Nhấn', '--accent'], ['Viền', '--border-default'],
+  ]);
+  swatches('grays', ['50','100','200','300','400','500','600','700','800','900','950']
+    .map(s => ['Gray ' + s, '--color-gray-' + s, '']));
+  swatches('accents', [
+    ['Blue 500', '--color-blue-500', 'Nút chính'], ['Blue 600', '--color-blue-600', 'Hover'],
+    ['Blue 700', '--color-blue-700', 'Link nền sáng'], ['Blue 400', '--color-blue-400', 'Link nền tối'],
+    ['Success', '--color-green-500'], ['Warning', '--color-orange-500'], ['Danger', '--color-red-500'],
+  ]);
+  // Ghi giá trị hex thực tế dưới mỗi ô
+  function fillHex() {
+    document.querySelectorAll('.swatch').forEach(s => {
+      const token = s.querySelector('code').textContent;
+      const c = getComputedStyle(s.querySelector('.chip')).backgroundColor;
+      let hx = s.querySelector('.hex');
+      if (!hx) { hx = document.createElement('code'); hx.className = 'hex'; hx.style.display = 'block'; s.querySelector('.meta').appendChild(hx); }
+      hx.textContent = toHex(c);
+    });
+  }
+  function toHex(rgb) {
+    const m = rgb.match(/[\d.]+/g); if (!m) return rgb;
+    const h = m.slice(0,3).map(n => (+n).toString(16).padStart(2,'0')).join('');
+    return '#' + h + (m[3] !== undefined && +m[3] < 1 ? ` · ${Math.round(m[3]*100)}%` : '');
+  }
+
+  document.getElementById('spacing').innerHTML = ['1','2','3','4','5','6','8','10','12','16','20','24','32']
+    .map(s => `<div class="scale-row"><span>--space-${s}<br>${v('--space-'+s)}</span><div class="scale-bar" style="width:var(--space-${s})"></div></div>`).join('');
+
+  document.getElementById('radii').innerHTML = ['xs','sm','md','lg','xl','pill']
+    .map(r => `<div class="radius-tile" style="border-radius:var(--radius-${r})">${r}<br>${v('--radius-'+r)}</div>`).join('');
+
+  fillHex();
+
+  // Đổi theme
+  const root = document.documentElement;
+  try { const t = localStorage.getItem('ds-theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  requestAnimationFrame(fillHex);
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('ds-theme', root.dataset.theme); } catch (e) {}
+    fillHex();
+  });
+</script>
+</body>
+</html>
