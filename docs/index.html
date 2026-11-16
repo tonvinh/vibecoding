@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đập Chuột — Tài liệu</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-brand" href="index.html">Đập Chuột · Tài liệu</a>
+  <div class="nav-links">
+    <a href="index.html" aria-current="page">Mục lục</a>
+    <a href="01-tong-quan.html">Tổng quan</a>
+    <a href="02-chuc-nang.html">Chức năng</a>
+    <a href="03-man-hinh.html">Màn hình</a>
+    <a href="04-quy-tac-du-lieu.html">Quy tắc &amp; dữ liệu</a>
+    <a href="05-ke-hoach-test.html">Kế hoạch test</a>
+  </div>
+</div></nav>
+
+<main class="container">
+  <header class="page-head">
+    <p class="eyebrow">Bộ tài liệu thiết kế</p>
+    <h1>Đập Chuột</h1>
+    <p class="lead">Mini game trên trình duyệt: 10 giây, lưới 3×3, mỗi lần một con chuột. Bộ tài liệu này mô tả đủ để viết code và kiểm thử mà không phải hỏi lại.</p>
+  </header>
+
+  <section>
+    <h2>Mục lục</h2>
+    <div class="cards">
+      <a class="card" href="01-tong-quan.html"><span class="num">01</span><h3>Tổng quan</h3><p>Game là gì, cho ai, phạm vi, ràng buộc kỹ thuật và các giả định còn chờ xác nhận.</p></a>
+      <a class="card" href="02-chuc-nang.html"><span class="num">02</span><h3>Chức năng</h3><p>Danh sách chức năng F1–F9, hành vi chi tiết và liên kết tới luật L1–L9.</p></a>
+      <a class="card" href="03-man-hinh.html"><span class="num">03</span><h3>Màn hình</h3><p>Ba màn hình Bắt đầu, Đang chơi, Kết thúc: phác thảo, thành phần, kích thước, phản hồi trực quan.</p></a>
+      <a class="card" href="04-quy-tac-du-lieu.html"><span class="num">04</span><h3>Quy tắc &amp; dữ liệu</h3><p>Thông số, máy trạng thái, dòng thời gian của chuột, trường hợp biên và dữ liệu lưu trên trình duyệt.</p></a>
+      <a class="card" href="05-ke-hoach-test.html"><span class="num">05</span><h3>Kế hoạch test</h3><p>Ca kiểm thử theo tiêu chí T1–T10, ca biên, ma trận trình duyệt và điều kiện nghiệm thu.</p></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Thông số chính</h2>
+    <div class="cards">
+      <div class="card"><div class="stat">10 giây</div><p>Thời lượng một lượt chơi</p></div>
+      <div class="card"><div class="stat">3 × 3</div><p>Lưới 9 ô, tối đa 1 chuột cùng lúc</p></div>
+      <div class="card"><div class="stat">0,8 giây</div><p>Chuột ở lại nếu không bị đập</p></div>
+      <div class="card"><div class="stat">0,3 giây</div><p>Khoảng nghỉ giữa hai con chuột</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Trạng thái tài liệu</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mục</th><th>Giá trị</th></tr>
+      <tr><td>Nguồn yêu cầu</td><td><code>YEU-CAU.md</code> ở thư mục gốc</td></tr>
+      <tr><td>Giao diện</td><td><code>design/tokens.css</code> (xem thêm <a href="../design/design-system.html">design system</a>)</td></tr>
+      <tr><td>Ngày viết</td><td>16/11/2026</td></tr>
+      <tr><td>Giai đoạn</td><td>Thiết kế — chưa có code game</td></tr>
+      <tr><td>Điểm chờ xác nhận</td><td>7 giả định, liệt kê ở <a href="01-tong-quan.html#gia-dinh">Tổng quan › Giả định</a></td></tr>
+    </table></div>
+  </section>
+</main>
+</body>
+</html>

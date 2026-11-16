@@ -1,0 +1,13 @@
+{
+  "name": "vibecoding-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Server Node.js nhỏ phục vụ game trong thư mục app/",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

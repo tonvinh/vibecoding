@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 · Quy tắc &amp; dữ liệu — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-brand" href="index.html">Đập Chuột · Tài liệu</a>
+  <div class="nav-links">
+    <a href="index.html">Mục lục</a>
+    <a href="01-tong-quan.html">Tổng quan</a>
+    <a href="02-chuc-nang.html">Chức năng</a>
+    <a href="03-man-hinh.html">Màn hình</a>
+    <a href="04-quy-tac-du-lieu.html" aria-current="page">Quy tắc &amp; dữ liệu</a>
+    <a href="05-ke-hoach-test.html">Kế hoạch test</a>
+  </div>
+</div></nav>
+
+<main class="container">
+  <header class="page-head">
+    <p class="eyebrow">04</p>
+    <h1>Quy tắc &amp; dữ liệu</h1>
+    <p class="lead">Thông số, trạng thái, dòng thời gian và cách xử lý các trường hợp biên. Đây là trang người viết code cần đọc kỹ nhất.</p>
+  </header>
+
+  <section>
+    <h2>Thông số</h2>
+    <p>Tất cả đặt thành hằng số ở một chỗ trong code, không rải số trong logic.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Tên hằng</th><th>Giá trị</th><th>Ý nghĩa</th><th>Nguồn</th></tr>
+      <tr><td><code>SO_O</code></td><td class="num">9</td><td>Số ô của lưới (3×3)</td><td>L1</td></tr>
+      <tr><td><code>THOI_LUONG_LUOT</code></td><td class="num">10 000 ms</td><td>Độ dài một lượt</td><td>L2</td></tr>
+      <tr><td><code>THOI_GIAN_HIEN</code></td><td class="num">800 ms</td><td>Chuột ở lại nếu không bị đập</td><td>L4</td></tr>
+      <tr><td><code>KHOANG_NGHI</code></td><td class="num">300 ms</td><td>Bảng trống giữa hai chuột, và trước con đầu tiên</td><td>L5, G2</td></tr>
+      <tr><td><code>HIEU_UNG_DAP</code></td><td class="num">150 ms</td><td>Thời gian hiện hình "bị đập"</td><td>Mục 3</td></tr>
+      <tr><td><code>NGUONG_CANH_BAO</code></td><td class="num">3 giây</td><td>Đồng hồ đổi đỏ khi số hiển thị ≤ giá trị này</td><td>Mục 3</td></tr>
+      <tr><td><code>DIEM_MOI_CHUOT</code></td><td class="num">1</td><td>Điểm cho mỗi lần đập trúng</td><td>Mục 2</td></tr>
+      <tr><td><code>KHOA_NUT_CHOI_LAI</code></td><td class="num">500 ms</td><td>Nút "Chơi lại" chưa nhận bấm ngay sau khi hết giờ</td><td>G7</td></tr>
+      <tr><td><code>KHOA_LUU_TRU</code></td><td class="num"><code>"dap-chuot:diem-cao-nhat"</code></td><td>Khoá trong localStorage</td><td>Mục 2</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Trạng thái của game</h2>
+    <div class="flow">
+      <span class="state">BAT_DAU</span><span class="arrow">bấm "Bắt đầu" →</span>
+      <span class="state">DANG_CHOI</span><span class="arrow">đủ 10 000 ms →</span>
+      <span class="state">KET_THUC</span><span class="arrow">bấm "Chơi lại" → DANG_CHOI</span>
+    </div>
+    <div class="table-wrap"><table>
+      <tr><th>Trạng thái</th><th>Màn hình</th><th>Bấm vào lưới</th><th>Hẹn giờ đang chạy</th></tr>
+      <tr><td><code>BAT_DAU</code></td><td>Bắt đầu</td><td>Lưới không hiện</td><td>Không có</td></tr>
+      <tr><td><code>DANG_CHOI</code></td><td>Đang chơi</td><td>Được xử lý</td><td>Đồng hồ lượt + một hẹn giờ của chuột</td></tr>
+      <tr><td><code>KET_THUC</code></td><td>Kết thúc</td><td>Bị bỏ qua</td><td>Không có (đã huỷ hết)</td></tr>
+    </table></div>
+    <p>Không có đường quay về <code>BAT_DAU</code> ngoài việc tải lại trang.</p>
+  </section>
+
+  <section>
+    <h2>Trạng thái của bảng</h2>
+    <div class="flow">
+      <span class="state">NGHI</span><span class="arrow">sau 300 ms →</span>
+      <span class="state">CO_CHUOT</span><span class="arrow">bị bấm trúng, hoặc đủ 800 ms →</span>
+      <span class="state">NGHI</span>
+    </div>
+    <ul>
+      <li>Bảng chỉ ở một trong hai trạng thái, nên không thể có 2 chuột cùng lúc (L3).</li>
+      <li>Khi vào <code>CO_CHUOT</code>: chọn ô ngẫu nhiên khác <code>oVuaXong</code>, ghi lại ô đó.</li>
+      <li>Khi rời <code>CO_CHUOT</code> (vì bất kỳ lý do nào): <code>oVuaXong</code> = ô vừa dùng, huỷ hẹn giờ 800 ms nếu còn, đặt hẹn giờ 300 ms.</li>
+      <li>Hình "bị đập" 150 ms chỉ là hiển thị, nằm chồng lên khoảng nghỉ 300 ms. Về mặt logic, ô đã trống ngay khi bị bấm trúng.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Dòng thời gian mẫu</h2>
+    <p>Mốc thời gian tính bằng giây kể từ lúc bấm "Bắt đầu".</p>
+    <div class="table-wrap"><table>
+      <tr><th>Mốc</th><th>Sự kiện</th><th>Điểm</th></tr>
+      <tr><td class="num">0,00</td><td>Bấm "Bắt đầu". Bảng trống, đồng hồ hiện 10.</td><td class="num">0</td></tr>
+      <tr><td class="num">0,30</td><td>Chuột 1 hiện ở ô 4.</td><td class="num">0</td></tr>
+      <tr><td class="num">0,75</td><td>Bấm trúng ô 4. Chuột mất, bắt đầu nghỉ.</td><td class="num">1</td></tr>
+      <tr><td class="num">1,05</td><td>Chuột 2 hiện (không phải ô 4), giả sử ô 7.</td><td class="num">1</td></tr>
+      <tr><td class="num">1,85</td><td>Không ai bấm: chuột 2 tự biến mất.</td><td class="num">1</td></tr>
+      <tr><td class="num">2,15</td><td>Chuột 3 hiện (không phải ô 7; được phép quay lại ô 4).</td><td class="num">1</td></tr>
+      <tr><td class="num">…</td><td>…</td><td class="num">…</td></tr>
+      <tr><td class="num">9,60</td><td>Chuột cuối hiện.</td><td class="num">n</td></tr>
+      <tr><td class="num">10,00</td><td>Hết giờ: chuột cuối biến mất dù mới hiện 0,4 giây. Sang màn Kết thúc.</td><td class="num">n</td></tr>
+    </table></div>
+    <h3>Hai con số dùng để kiểm tra</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Cách chơi</th><th>Chuột hiện ở các mốc</th><th>Số chuột trong lượt</th></tr>
+      <tr><td>Không bấm gì</td><td>0,3 · 1,4 · 2,5 · … · 9,1 (cách nhau 1,1 giây)</td><td class="num">9</td></tr>
+      <tr><td>Đập tức thì mọi con (lý thuyết)</td><td>0,3 · 0,6 · 0,9 · … · 9,9 (cách nhau 0,3 giây)</td><td class="num">33</td></tr>
+    </table></div>
+    <p>Vậy điểm của một lượt luôn nằm trong khoảng 0–33. Người thật thường đạt khoảng 10–18.</p>
+  </section>
+
+  <section>
+    <h2>Trường hợp biên</h2>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Tình huống</th><th>Cách xử lý</th></tr>
+      <tr><td>B1</td><td>Bấm trúng đúng lúc chuột sắp hết 800 ms</td><td>So theo thời điểm bấm: bấm trước mốc hết hạn thì tính điểm. Nếu hẹn giờ biến mất đã chạy trước, lần bấm rơi vào ô trống, 0 điểm.</td></tr>
+      <tr><td>B2</td><td>Bấm trúng đúng lúc hết 10 giây</td><td>Lần bấm chỉ tính khi game còn ở <code>DANG_CHOI</code>. Sau khi đã chuyển sang <code>KET_THUC</code> thì bỏ qua.</td></tr>
+      <tr><td>B3</td><td>Đến hạn sinh chuột đúng mốc 10 giây hoặc muộn hơn</td><td>Không sinh.</td></tr>
+      <tr><td>B4</td><td>Bấm hai lần rất nhanh vào cùng một con chuột</td><td>Lần đầu +1 và ô chuyển sang trống; lần hai là bấm ô trống, 0 điểm.</td></tr>
+      <tr><td>B5</td><td>Hai ngón chạm cùng lúc, một trúng một trượt</td><td>Xử lý lần lượt từng lần chạm; kết quả +1.</td></tr>
+      <tr><td>B6</td><td>Rời tab giữa lượt rồi quay lại</td><td>Thời gian vẫn trôi theo đồng hồ thực. Quay lại sau mốc 10 giây thì thấy ngay màn Kết thúc. <span class="tag warn">Giả định G4</span></td></tr>
+      <tr><td>B7</td><td>Bấm "Chơi lại" nhiều lần liên tiếp</td><td>Chỉ lần đầu có tác dụng; không tạo hai lượt chạy song song.</td></tr>
+      <tr><td>B8</td><td>Điểm bằng đúng kỷ lục cũ</td><td>Không ghi lại, không hiện "Kỷ lục mới!". <span class="tag warn">Giả định G3</span></td></tr>
+      <tr><td>B9</td><td>Tải lại trang giữa lượt</td><td>Lượt đang chơi mất, không lưu gì; về màn Bắt đầu với kỷ lục cũ.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Dữ liệu trong lúc chạy</h2>
+    <p>Chỉ nằm trong bộ nhớ, mất khi tải lại trang.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Tên</th><th>Kiểu</th><th>Giá trị đầu lượt</th><th>Ý nghĩa</th></tr>
+      <tr><td><code>trangThai</code></td><td>chuỗi</td><td><code>DANG_CHOI</code></td><td><code>BAT_DAU</code> | <code>DANG_CHOI</code> | <code>KET_THUC</code></td></tr>
+      <tr><td><code>diem</code></td><td>số nguyên ≥ 0</td><td class="num">0</td><td>Điểm lượt hiện tại</td></tr>
+      <tr><td><code>mocBatDau</code></td><td>mốc thời gian (ms)</td><td>thời điểm bấm</td><td>Dùng để tính thời gian còn lại</td></tr>
+      <tr><td><code>oCoChuot</code></td><td>0–8 hoặc rỗng</td><td>rỗng</td><td>Ô đang có chuột</td></tr>
+      <tr><td><code>oVuaXong</code></td><td>0–8 hoặc rỗng</td><td>rỗng</td><td>Ô của con chuột liền trước (L6)</td></tr>
+      <tr><td><code>diemCaoNhat</code></td><td>số nguyên ≥ 0</td><td>đọc từ lưu trữ</td><td>Kỷ lục trên trình duyệt này</td></tr>
+    </table></div>
+    <p>Thời gian còn lại không lưu riêng mà luôn tính từ <code>mocBatDau</code>:</p>
+<pre><code>conLaiMs  = max(0, 10000 − (bayGio − mocBatDau))
+soHienThi = lamTronLen(conLaiMs / 1000)     // 10, 9, …, 1, rồi 0 khi hết giờ</code></pre>
+    <p><code>bayGio</code> lấy từ đồng hồ đơn điệu của trình duyệt (<code>performance.now()</code>), không bị ảnh hưởng khi người dùng chỉnh giờ máy.</p>
+  </section>
+
+  <section>
+    <h2>Dữ liệu lưu trên trình duyệt</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Khoá</th><th>Giá trị</th><th>Ghi khi nào</th><th>Đọc khi nào</th></tr>
+      <tr><td><code>dap-chuot:diem-cao-nhat</code></td><td>Chuỗi số nguyên, ví dụ <code>"14"</code></td><td>Cuối lượt, chỉ khi điểm &gt; kỷ lục cũ</td><td>Một lần lúc mở trang</td></tr>
+    </table></div>
+    <h3>Quy tắc đọc</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Giá trị đọc được</th><th>Kết quả</th></tr>
+      <tr><td>Không có khoá</td><td class="num">0</td></tr>
+      <tr><td>Số nguyên ≥ 0, ví dụ <code>"14"</code></td><td class="num">14</td></tr>
+      <tr><td>Không phải số, số âm, số lẻ, rỗng (<code>"abc"</code>, <code>"-3"</code>, <code>"2.5"</code>, <code>""</code>)</td><td class="num">0</td></tr>
+      <tr><td>Trình duyệt chặn lưu trữ (báo lỗi khi đọc hoặc ghi)</td><td>0, game vẫn chạy, kỷ lục chỉ giữ trong bộ nhớ</td></tr>
+    </table></div>
+    <div class="note"><b>Lưu ý khi mở bằng file://</b>Mỗi trình duyệt cấp vùng lưu trữ riêng cho trang <code>file://</code>, và một số trình duyệt gắn nó với đường dẫn file. Đổi tên hoặc chuyển file sang thư mục khác có thể làm kỷ lục về 0. Đây là hành vi của trình duyệt, không phải lỗi của game.</div>
+  </section>
+
+  <nav class="pager">
+    <a href="03-man-hinh.html"><small>Trước</small>← 03 · Màn hình</a>
+    <a href="05-ke-hoach-test.html"><small>Tiếp</small>05 · Kế hoạch test →</a>
+  </nav>
+</main>
+</body>
+</html>

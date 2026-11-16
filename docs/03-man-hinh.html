@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03 · Màn hình — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-brand" href="index.html">Đập Chuột · Tài liệu</a>
+  <div class="nav-links">
+    <a href="index.html">Mục lục</a>
+    <a href="01-tong-quan.html">Tổng quan</a>
+    <a href="02-chuc-nang.html">Chức năng</a>
+    <a href="03-man-hinh.html" aria-current="page">Màn hình</a>
+    <a href="04-quy-tac-du-lieu.html">Quy tắc &amp; dữ liệu</a>
+    <a href="05-ke-hoach-test.html">Kế hoạch test</a>
+  </div>
+</div></nav>
+
+<main class="container">
+  <header class="page-head">
+    <p class="eyebrow">03</p>
+    <h1>Màn hình</h1>
+    <p class="lead">Ba màn hình trên cùng một trang, mỗi lúc chỉ hiện một. Phác thảo dưới đây vẽ bằng chính design token của dự án.</p>
+  </header>
+
+  <section>
+    <h2>Phác thảo</h2>
+    <div class="mocks">
+      <div>
+        <div class="mock">
+          <div class="mock-title">Đập Chuột</div>
+          <div class="mock-sub">Bấm trúng chuột trong 10 giây để ghi điểm.</div>
+          <div class="mock-sub">Điểm cao nhất: <b>12</b></div>
+          <span class="btn lg">Bắt đầu</span>
+        </div>
+        <p class="mock-caption">Bắt đầu</p>
+      </div>
+      <div>
+        <div class="mock">
+          <div class="mock-hud"><span>Điểm 7</span><span class="danger">3 giây</span></div>
+          <div class="mock-grid">
+            <span></span><span></span><span></span>
+            <span></span><span>🐭</span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+          <div class="mock-sub">Đồng hồ đỏ ở 3 giây cuối</div>
+        </div>
+        <p class="mock-caption">Đang chơi</p>
+      </div>
+      <div>
+        <div class="mock">
+          <span class="tag accent">Kỷ lục mới!</span>
+          <div class="mock-sub">Điểm lượt này</div>
+          <div class="mock-score">14</div>
+          <div class="mock-sub">Điểm cao nhất: <b>14</b></div>
+          <span class="btn lg">Chơi lại</span>
+        </div>
+        <p class="mock-caption">Kết thúc</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Màn Bắt đầu</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Thành phần</th><th>Nội dung</th><th>Ghi chú</th></tr>
+      <tr><td>Tên game</td><td>"Đập Chuột"</td><td>Tiêu đề lớn, <code>--font-display</code>, đậm 600.</td></tr>
+      <tr><td>Luật tóm tắt</td><td>"Bấm trúng chuột trong 10 giây để ghi điểm."</td><td>Một dòng, màu <code>--text-secondary</code>.</td></tr>
+      <tr><td>Điểm cao nhất</td><td>"Điểm cao nhất: N"</td><td>Chưa chơi lần nào thì hiện 0.</td></tr>
+      <tr><td>Nút "Bắt đầu"</td><td>Nút chính, dạng viên thuốc</td><td>Cao 48 px (<code>--button-height-lg</code>), nền <code>--accent</code>.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Màn Đang chơi</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Thành phần</th><th>Nội dung</th><th>Ghi chú</th></tr>
+      <tr><td>Điểm hiện tại</td><td>"Điểm N"</td><td>Bên trái, phía trên lưới. Chữ số cùng bề rộng để không giật khi đổi.</td></tr>
+      <tr><td>Thời gian còn lại</td><td>"N giây"</td><td>Bên phải, phía trên lưới. Đổi sang <code>--danger</code> khi N ≤ 3.</td></tr>
+      <tr><td>Lưới 3×3</td><td>9 ô vuông</td><td>Ô trống: nền <code>--bg-subtle</code>, bo góc <code>--radius-lg</code>. Ô có chuột: hiện 🐭 ở giữa. <span class="tag warn">Giả định G5</span></td></tr>
+    </table></div>
+    <p>Màn này không có nút nào khác: không tạm dừng, không thoát giữa chừng.</p>
+  </section>
+
+  <section>
+    <h2>Màn Kết thúc</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Thành phần</th><th>Nội dung</th><th>Ghi chú</th></tr>
+      <tr><td>Thông báo kỷ lục</td><td>"Kỷ lục mới!"</td><td>Chỉ hiện khi điểm lượt này vượt kỷ lục cũ. Không hiện thì không chừa chỗ trống gây lệch bố cục.</td></tr>
+      <tr><td>Điểm lượt này</td><td>Số lớn</td><td>Thành phần nổi bật nhất của màn.</td></tr>
+      <tr><td>Điểm cao nhất</td><td>"Điểm cao nhất: N"</td><td>Là giá trị sau khi đã cập nhật.</td></tr>
+      <tr><td>Nút "Chơi lại"</td><td>Nút chính</td><td>Cùng kiểu với nút "Bắt đầu".</td></tr>
+    </table></div>
+    <div class="note"><b>Tránh bấm nhầm</b>Người chơi thường vẫn đang bấm dồn dập khi hết giờ. Nút "Chơi lại" nằm ngoài vùng lưới và chỉ nhận bấm sau khi màn Kết thúc hiện được 0,5 giây, để không vô tình vào lượt mới. <span class="tag warn">Giả định G7</span></div>
+  </section>
+
+  <section>
+    <h2>Phản hồi trực quan</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Sự kiện</th><th>Phản hồi</th><th>Thời lượng</th></tr>
+      <tr><td>Chuột hiện</td><td>🐭 xuất hiện trong ô, phóng nhẹ từ nhỏ lên</td><td class="num">≤ 100 ms</td></tr>
+      <tr><td>Đập trúng</td><td>🐭 đổi thành 💥, ô đổi nền sang <code>--accent</code></td><td class="num">~150 ms</td></tr>
+      <tr><td>Điểm +1</td><td>Số điểm nảy lên (phóng to rồi về cỡ cũ)</td><td class="num">160 ms (<code>--duration-fast</code>)</td></tr>
+      <tr><td>Còn ≤ 3 giây</td><td>Số đồng hồ chuyển màu <code>--danger</code></td><td class="num">đến hết lượt</td></tr>
+      <tr><td>Bấm ô trống</td><td>Không có phản hồi</td><td class="num">—</td></tr>
+    </table></div>
+    <p>Hiệu ứng chỉ để trang trí: thời điểm chuột hiện, mất và tính điểm không phụ thuộc vào hiệu ứng đã chạy xong hay chưa. Khi hệ thống bật "giảm chuyển động", bỏ hiệu ứng phóng/nảy, vẫn giữ đổi hình và đổi màu.</p>
+  </section>
+
+  <section id="kich-thuoc">
+    <h2>Kích thước và bố cục</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mục</th><th>Màn 360 px</th><th>Màn rộng</th></tr>
+      <tr><td>Lề hai bên</td><td class="num">16 px</td><td class="num">22 px</td></tr>
+      <tr><td>Khe giữa các ô</td><td class="num">12 px</td><td class="num">12 px</td></tr>
+      <tr><td>Cạnh một ô</td><td class="num">≈ 101 px</td><td class="num">tối đa 140 px</td></tr>
+      <tr><td>Bề rộng lưới</td><td class="num">328 px</td><td class="num">tối đa 444 px, canh giữa</td></tr>
+    </table></div>
+    <ul>
+      <li>Cả ba màn canh giữa theo chiều ngang, nội dung nằm gọn trong một màn hình, không phải cuộn.</li>
+      <li>Giao diện theo chế độ sáng/tối của hệ thống nhờ <code>tokens.css</code>; không cần nút đổi giao diện.</li>
+      <li>Điện thoại xoay ngang: lưới thu theo chiều cao màn hình, ô vẫn ≥ 80 px.</li>
+    </ul>
+  </section>
+
+  <nav class="pager">
+    <a href="02-chuc-nang.html"><small>Trước</small>← 02 · Chức năng</a>
+    <a href="04-quy-tac-du-lieu.html"><small>Tiếp</small>04 · Quy tắc &amp; dữ liệu →</a>
+  </nav>
+</main>
+</body>
+</html>

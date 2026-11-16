@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02 · Chức năng — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-brand" href="index.html">Đập Chuột · Tài liệu</a>
+  <div class="nav-links">
+    <a href="index.html">Mục lục</a>
+    <a href="01-tong-quan.html">Tổng quan</a>
+    <a href="02-chuc-nang.html" aria-current="page">Chức năng</a>
+    <a href="03-man-hinh.html">Màn hình</a>
+    <a href="04-quy-tac-du-lieu.html">Quy tắc &amp; dữ liệu</a>
+    <a href="05-ke-hoach-test.html">Kế hoạch test</a>
+  </div>
+</div></nav>
+
+<main class="container">
+  <header class="page-head">
+    <p class="eyebrow">02</p>
+    <h1>Chức năng</h1>
+    <p class="lead">Chín chức năng, mỗi cái gắn với luật (L) và tiêu chí hoàn thành (T) trong <code>YEU-CAU.md</code>.</p>
+  </header>
+
+  <section>
+    <h2>Danh sách</h2>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Chức năng</th><th>Luật</th><th>Tiêu chí</th></tr>
+      <tr><td>F1</td><td><a href="#f1">Bắt đầu lượt chơi</a></td><td>L2</td><td>T7</td></tr>
+      <tr><td>F2</td><td><a href="#f2">Hiển thị lưới 3×3</a></td><td>L1</td><td>T2</td></tr>
+      <tr><td>F3</td><td><a href="#f3">Sinh chuột</a></td><td>L3, L4, L5, L6</td><td>T5</td></tr>
+      <tr><td>F4</td><td><a href="#f4">Đập chuột và tính điểm</a></td><td>L7</td><td>T4</td></tr>
+      <tr><td>F5</td><td><a href="#f5">Đồng hồ đếm ngược</a></td><td>L2</td><td>T3</td></tr>
+      <tr><td>F6</td><td><a href="#f6">Kết thúc lượt</a></td><td>L8</td><td>T3, T6</td></tr>
+      <tr><td>F7</td><td><a href="#f7">Điểm cao nhất</a></td><td>—</td><td>T8</td></tr>
+      <tr><td>F8</td><td><a href="#f8">Chơi lại</a></td><td>—</td><td>T7</td></tr>
+      <tr><td>F9</td><td><a href="#f9">Hỗ trợ click và chạm</a></td><td>L9</td><td>T9</td></tr>
+    </table></div>
+  </section>
+
+  <section id="f1">
+    <h2>F1 · Bắt đầu lượt chơi</h2>
+    <p><b>Kích hoạt:</b> bấm nút "Bắt đầu" ở màn Bắt đầu.</p>
+    <ul>
+      <li>Điểm đặt về 0, thời gian còn lại đặt về 10, ô vừa dùng đặt về "chưa có".</li>
+      <li>Chuyển sang màn Đang chơi, đồng hồ bắt đầu đếm từ đúng thời điểm bấm.</li>
+      <li>Con chuột đầu tiên hiện sau 0,3 giây. <span class="tag warn">Giả định G2</span></li>
+    </ul>
+  </section>
+
+  <section id="f2">
+    <h2>F2 · Hiển thị lưới 3×3</h2>
+    <ul>
+      <li>Luôn đúng 9 ô, 3 hàng × 3 cột, các ô vuông bằng nhau.</li>
+      <li>Mỗi ô tối thiểu 80×80 px ở màn rộng 360 px; lớn dần theo màn hình nhưng có giới hạn trên (xem <a href="03-man-hinh.html#kich-thuoc">Màn hình › Kích thước</a>).</li>
+      <li>Ô trống và ô có chuột phân biệt rõ bằng mắt.</li>
+    </ul>
+  </section>
+
+  <section id="f3">
+    <h2>F3 · Sinh chuột</h2>
+    <ul>
+      <li>Mỗi thời điểm có tối đa 1 chuột trên bảng.</li>
+      <li>Ô được chọn ngẫu nhiên đều trong 8 ô còn lại, loại ô của con chuột liền trước. Con đầu tiên của lượt chọn trong cả 9 ô.</li>
+      <li>Chuột ở lại 0,8 giây; không bị đập thì tự biến mất.</li>
+      <li>Sau khi chuột biến mất hoặc bị đập, bảng trống 0,3 giây rồi chuột kế tiếp hiện.</li>
+      <li>Không sinh chuột mới khi lượt đã kết thúc.</li>
+    </ul>
+  </section>
+
+  <section id="f4">
+    <h2>F4 · Đập chuột và tính điểm</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Hành động</th><th>Điểm</th><th>Điều xảy ra</th></tr>
+      <tr><td>Bấm ô đang có chuột</td><td class="num">+1</td><td>Chuột chuyển sang hình "bị đập" khoảng 150 ms rồi mất; số điểm nhảy lên; khoảng nghỉ 0,3 giây tính từ lúc bấm.</td></tr>
+      <tr><td>Bấm ô trống</td><td class="num">0</td><td>Không có gì thay đổi.</td></tr>
+      <tr><td>Bấm lại con chuột vừa bị đập (trong 150 ms hiệu ứng)</td><td class="num">0</td><td>Không cộng thêm; mỗi con chỉ tính một lần.</td></tr>
+      <tr><td>Để chuột tự biến mất</td><td class="num">0</td><td>Không trừ điểm.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="f5">
+    <h2>F5 · Đồng hồ đếm ngược</h2>
+    <ul>
+      <li>Hiện số giây còn lại, là số nguyên, làm tròn lên: vừa bắt đầu hiện 10, số 0 chỉ hiện khi đã hết giờ.</li>
+      <li>Khi còn 3 giây trở xuống (hiện 3, 2, 1), số đồng hồ đổi sang màu đỏ.</li>
+      <li>Thời gian tính theo đồng hồ thực của máy, không theo số lần cập nhật màn hình, để sai lệch tổng không quá 0,2 giây.</li>
+    </ul>
+  </section>
+
+  <section id="f6">
+    <h2>F6 · Kết thúc lượt</h2>
+    <ul>
+      <li>Đúng 10 giây sau khi bắt đầu: lượt dừng, chuột đang hiện biến mất ngay.</li>
+      <li>Từ thời điểm đó, bấm vào lưới không làm đổi điểm.</li>
+      <li>So điểm với điểm cao nhất, cập nhật nếu vượt (F7), rồi chuyển sang màn Kết thúc.</li>
+    </ul>
+  </section>
+
+  <section id="f7">
+    <h2>F7 · Điểm cao nhất</h2>
+    <ul>
+      <li>Đọc từ <code>localStorage</code> khi mở trang; chưa có thì là 0.</li>
+      <li>Cuối mỗi lượt, nếu điểm lượt này lớn hơn điểm cao nhất thì ghi đè và hiện "Kỷ lục mới!". <span class="tag warn">Giả định G3</span></li>
+      <li>Hiện ở màn Bắt đầu và màn Kết thúc. Còn nguyên sau khi tải lại trang.</li>
+      <li>Nếu trình duyệt chặn lưu trữ, game vẫn chơi bình thường; điểm cao nhất chỉ giữ đến khi đóng trang.</li>
+    </ul>
+  </section>
+
+  <section id="f8">
+    <h2>F8 · Chơi lại</h2>
+    <p><b>Kích hoạt:</b> bấm nút "Chơi lại" ở màn Kết thúc.</p>
+    <ul>
+      <li>Hành vi giống hệt F1: điểm về 0, thời gian về 10, vào thẳng màn Đang chơi (không quay lại màn Bắt đầu).</li>
+      <li>Không còn hẹn giờ nào của lượt trước chạy sót sang lượt mới.</li>
+    </ul>
+  </section>
+
+  <section id="f9">
+    <h2>F9 · Hỗ trợ click và chạm</h2>
+    <ul>
+      <li>Một lần bấm được ghi nhận ngay lúc nhấn xuống (không chờ nhả ra), để đập kịp trong 0,8 giây.</li>
+      <li>Một lần chạm chỉ tính là một lần bấm, không bị tính đôi.</li>
+      <li>Bấm nhanh liên tiếp trên điện thoại không làm trang phóng to, cuộn, hay bôi chọn chữ.</li>
+      <li>Chạm nhiều ngón cùng lúc: mỗi ngón là một lần bấm độc lập.</li>
+    </ul>
+  </section>
+
+  <nav class="pager">
+    <a href="01-tong-quan.html"><small>Trước</small>← 01 · Tổng quan</a>
+    <a href="03-man-hinh.html"><small>Tiếp</small>03 · Màn hình →</a>
+  </nav>
+</main>
+</body>
+</html>

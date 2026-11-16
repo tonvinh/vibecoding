@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+
+  <!-- Màn Bắt đầu -->
+  <section class="man man-bat-dau" id="man-bat-dau">
+    <h1 class="ten-game">Đập Chuột</h1>
+    <p class="luat">Bấm trúng chuột trong 10 giây để ghi điểm.</p>
+    <p class="ky-luc">Điểm cao nhất: <b id="ky-luc-bat-dau">0</b></p>
+    <button class="btn" id="nut-bat-dau" type="button">Bắt đầu</button>
+  </section>
+
+  <!-- Màn Đang chơi -->
+  <section class="man man-dang-choi" id="man-dang-choi" hidden>
+    <div class="chi-so">
+      <p class="chi-so-diem">Điểm <span class="so-diem" id="so-diem">0</span></p>
+      <p class="chi-so-gio" id="dong-ho"><span id="so-giay">10</span> giây</p>
+    </div>
+    <div class="luoi" id="luoi">
+      <div class="o" data-o="0"></div>
+      <div class="o" data-o="1"></div>
+      <div class="o" data-o="2"></div>
+      <div class="o" data-o="3"></div>
+      <div class="o" data-o="4"></div>
+      <div class="o" data-o="5"></div>
+      <div class="o" data-o="6"></div>
+      <div class="o" data-o="7"></div>
+      <div class="o" data-o="8"></div>
+    </div>
+  </section>
+
+  <!-- Màn Kết thúc -->
+  <section class="man man-ket-thuc" id="man-ket-thuc" hidden>
+    <p class="nhan-ky-luc" id="nhan-ky-luc" hidden>Kỷ lục mới!</p>
+    <p class="nhan-diem">Điểm lượt này</p>
+    <p class="diem-luot" id="diem-luot">0</p>
+    <p class="ky-luc">Điểm cao nhất: <b id="ky-luc-ket-thuc">0</b></p>
+    <button class="btn" id="nut-choi-lai" type="button">Chơi lại</button>
+  </section>
+
+</main>
+<script src="game.js"></script>
+</body>
+</html>
