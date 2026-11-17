@@ -10,12 +10,44 @@
 <body>
 <main class="app">
 
-  <!-- Màn Bắt đầu -->
-  <section class="man man-bat-dau" id="man-bat-dau">
+  <!-- Màn Đăng ký: hiện khi trình duyệt chưa nhớ người chơi nào -->
+  <section class="man man-dang-ky" id="man-dang-ky" hidden>
     <h1 class="ten-game">Đập Chuột</h1>
+    <p class="luat">Điền thông tin để bắt đầu chơi.</p>
+    <form class="form-dang-ky" id="form-dang-ky" novalidate>
+      <div class="o-nhap">
+        <label for="o-ho-ten">Họ tên</label>
+        <input id="o-ho-ten" name="name" type="text" autocomplete="name" autocapitalize="words"
+               maxlength="120" aria-describedby="loi-ho-ten" required>
+        <p class="loi-o" id="loi-ho-ten" hidden></p>
+      </div>
+      <div class="o-nhap">
+        <label for="o-email">Email</label>
+        <input id="o-email" name="email" type="email" inputmode="email" autocomplete="email"
+               autocapitalize="none" autocorrect="off" spellcheck="false"
+               maxlength="300" aria-describedby="loi-email" required>
+        <p class="loi-o" id="loi-email" hidden></p>
+      </div>
+      <div class="o-nhap">
+        <label for="o-so-dien-thoai">Số điện thoại</label>
+        <input id="o-so-dien-thoai" name="tel" type="tel" inputmode="tel" autocomplete="tel"
+               maxlength="30" aria-describedby="loi-so-dien-thoai" required>
+        <p class="loi-o" id="loi-so-dien-thoai" hidden></p>
+      </div>
+      <p class="loi-chung" id="loi-dang-ky" role="alert" hidden>Chưa gửi được, thử lại nhé.</p>
+      <button class="btn" id="nut-tiep-tuc" type="submit">Tiếp tục</button>
+      <p class="muc-dich">Thông tin chỉ dùng để ban tổ chức liên hệ với bạn.</p>
+    </form>
+  </section>
+
+  <!-- Màn Bắt đầu -->
+  <section class="man man-bat-dau" id="man-bat-dau" hidden>
+    <h1 class="ten-game">Đập Chuột</h1>
+    <p class="loi-chao" id="loi-chao" hidden>Xin chào, <b id="ten-nguoi-choi"></b></p>
     <p class="luat">Bấm trúng chuột trong 10 giây để ghi điểm.</p>
     <p class="ky-luc">Điểm cao nhất: <b id="ky-luc-bat-dau">0</b></p>
     <button class="btn" id="nut-bat-dau" type="button">Bắt đầu</button>
+    <button class="lien-ket" id="nut-doi-nguoi-choi" type="button">Không phải bạn? Đổi người chơi</button>
   </section>
 
   <!-- Màn Đang chơi -->
@@ -47,6 +79,7 @@
   </section>
 
 </main>
+<script src="quy-tac.js"></script>
 <script src="game.js"></script>
 </body>
 </html>

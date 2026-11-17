@@ -1,14 +1,20 @@
-// Server tĩnh nhỏ cho game: phục vụ app/ tại "/" và design/ tại "/design/".
-// Chỉ dùng module có sẵn của Node.js, không cần cài thêm gì.
+// Server của game: phục vụ app/ tại "/", design/ tại "/design/", trang admin tại "/admin",
+// API người chơi tại "/api/*" và API admin tại "/admin/api/*". Dữ liệu nằm trong PostgreSQL.
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+
+const db = require('./src/db');
+const nguoiChoi = require('./src/nguoi-choi');
+const admin = require('./src/admin');
+const { guiJson } = require('./src/tien-ich');
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 const APP_DIR = path.join(__dirname, 'app');
 const DESIGN_DIR = path.join(__dirname, 'design');
+const ADMIN_DIR = path.join(__dirname, 'admin');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -52,6 +58,9 @@ function resolveFile(urlPath) {
   if (pathname === '/design' || pathname.startsWith('/design/')) {
     root = DESIGN_DIR;
     rel = pathname.slice('/design'.length);
+  } else if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    root = ADMIN_DIR;
+    rel = pathname.slice('/admin'.length);
   }
 
   const file = path.join(root, path.normalize('/' + rel));
@@ -61,16 +70,37 @@ function resolveFile(urlPath) {
 
 const server = http.createServer((req, res) => {
   const started = Date.now();
+  let url;
+  try {
+    url = new URL(req.url, 'http://localhost');
+  } catch {
+    return send(res, 400, 'Bad Request');
+  }
+  const { pathname } = url;
+
+  // Nhật ký chỉ ghi đường dẫn, không ghi tham số (từ khoá tìm kiếm) hay thân yêu cầu.
   res.on('finish', () => {
-    console.log(`${req.method} ${req.url} ${res.statusCode} ${Date.now() - started}ms`);
+    console.log(`${req.method} ${pathname} ${res.statusCode} ${Date.now() - started}ms`);
   });
+
+  if (pathname === '/healthz') return send(res, 200, 'ok');
+
+  // API: trả JSON; lỗi không lường trước thành 500 và máy chủ vẫn chạy tiếp.
+  const laApiAdmin = pathname.startsWith('/admin/api/');
+  if (laApiAdmin || pathname.startsWith('/api/')) {
+    const xuLy = laApiAdmin ? admin.xuLy : nguoiChoi.xuLy;
+    xuLy(req, res, pathname, url).catch((err) => {
+      const status = err.status || 500;
+      if (status === 500) console.error(`Lỗi ${req.method} ${pathname}: ${err.code || ''} ${err.message}`);
+      if (res.headersSent) return res.destroy();
+      guiJson(res, status, { loi: err.loi || 'LOI_MAY_CHU' });
+    });
+    return;
+  }
 
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     return send(res, 405, 'Method Not Allowed', { Allow: 'GET, HEAD' });
   }
-
-  const { pathname } = new URL(req.url, 'http://localhost');
-  if (pathname === '/healthz') return send(res, 200, 'ok');
 
   let file = resolveFile(pathname);
   if (!file) return send(res, 400, 'Bad Request');
@@ -88,7 +118,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
       'Content-Type': MIME[path.extname(file).toLowerCase()] || 'application/octet-stream',
       'Content-Length': stat.size,
-      'Cache-Control': 'no-cache',
+      'Cache-Control': pathname === '/admin' || pathname.startsWith('/admin/') ? 'no-store' : 'no-cache',
     });
     if (req.method === 'HEAD') return res.end();
     fs.createReadStream(file)
@@ -101,11 +131,14 @@ server.listen(PORT, HOST, () => {
   console.log(`Server đang chạy tại http://localhost:${PORT}`);
 });
 
+admin.canhBaoCauHinh();
+db.khoiTao();
+
 // Tắt gọn khi Docker gửi tín hiệu dừng.
 for (const signal of ['SIGTERM', 'SIGINT']) {
   process.on(signal, () => {
     console.log(`Nhận ${signal}, đang tắt server...`);
-    server.close(() => process.exit(0));
+    server.close(() => db.dong().finally(() => process.exit(0)));
     setTimeout(() => process.exit(0), 3000).unref();
   });
 }

@@ -5,8 +5,13 @@ ENV NODE_ENV=production \
 
 WORKDIR /srv
 
-COPY package.json server.js ./
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY server.js ./
+COPY src ./src
 COPY app ./app
+COPY admin ./admin
 COPY design ./design
 
 USER node

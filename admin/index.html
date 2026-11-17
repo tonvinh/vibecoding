@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Quản trị</title>
+<link rel="stylesheet" href="/design/tokens.css">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<!-- Màn Đăng nhập -->
+<main class="dang-nhap" id="man-dang-nhap" hidden>
+  <form class="khung-dang-nhap" id="form-dang-nhap" novalidate>
+    <h1>Quản trị</h1>
+    <p class="thong-bao" id="tb-phien" hidden>Phiên đã hết hạn, đăng nhập lại nhé.</p>
+    <label class="o-nhap">
+      <span>Tên đăng nhập</span>
+      <input id="ten-dang-nhap" name="username" type="text" autocomplete="username"
+             autocapitalize="none" autocorrect="off" spellcheck="false" required>
+    </label>
+    <label class="o-nhap">
+      <span>Mật khẩu</span>
+      <input id="mat-khau" name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <p class="loi" id="loi-dang-nhap" role="alert" hidden></p>
+    <button class="btn" id="nut-dang-nhap" type="submit">Đăng nhập</button>
+  </form>
+</main>
+
+<!-- Màn Danh sách người chơi -->
+<main class="danh-sach" id="man-danh-sach" hidden>
+  <header class="dau-trang">
+    <h1>Người chơi · <span id="tong">0</span></h1>
+    <button class="btn btn-phu" id="nut-dang-xuat" type="button">Đăng xuất</button>
+  </header>
+
+  <div class="thanh-cong-cu">
+    <div class="o-tim">
+      <label for="tim">Tìm theo tên, email, số điện thoại</label>
+      <div class="o-tim-khung">
+        <input id="tim" type="search" maxlength="100" autocomplete="off" spellcheck="false">
+        <button class="nut-xoa-tim" id="nut-xoa-tim" type="button" aria-label="Xoá từ khoá" hidden>×</button>
+      </div>
+    </div>
+    <label class="o-sap-xep">
+      <span>Xếp theo</span>
+      <select id="sap-xep">
+        <option value="moi-nhat">Mới nhất</option>
+        <option value="diem">Điểm cao nhất</option>
+      </select>
+    </label>
+    <button class="btn" id="nut-xuat-csv" type="button">Xuất CSV</button>
+  </div>
+
+  <p class="ket-qua-tim" id="ket-qua-tim" aria-live="polite" hidden></p>
+  <p class="loi" id="loi-chung" role="alert" hidden></p>
+
+  <div class="khung-bang" id="khung-bang" hidden>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Họ tên</th>
+          <th scope="col">Email</th>
+          <th scope="col">Số điện thoại</th>
+          <th scope="col" class="so">Điểm cao nhất</th>
+          <th scope="col" class="so">Số lượt</th>
+          <th scope="col">Đăng ký lúc</th>
+          <th scope="col"><span class="an">Thao tác</span></th>
+        </tr>
+      </thead>
+      <tbody id="than-bang"></tbody>
+    </table>
+  </div>
+  <p class="trong" id="trong" hidden></p>
+
+  <nav class="phan-trang" id="phan-trang" aria-label="Phân trang" hidden>
+    <span id="khoang-dong"></span>
+    <span class="nut-trang">
+      <button class="btn btn-phu btn-nho" id="nut-truoc" type="button">← Trước</button>
+      <span id="so-trang"></span>
+      <button class="btn btn-phu btn-nho" id="nut-sau" type="button">Sau →</button>
+    </span>
+  </nav>
+</main>
+
+<!-- Hộp xác nhận xoá -->
+<dialog class="hop" id="hop-xoa" aria-labelledby="hop-xoa-tieu-de" aria-describedby="hop-xoa-chi-tiet">
+  <h2 id="hop-xoa-tieu-de">Xoá người chơi này?</h2>
+  <p id="hop-xoa-chi-tiet"></p>
+  <div class="hop-nut">
+    <button class="btn btn-phu" id="hop-huy" type="button" autofocus>Huỷ</button>
+    <button class="btn btn-nguy-hiem" id="hop-xoa-xac-nhan" type="button">Xoá</button>
+  </div>
+</dialog>
+
+<script src="/admin/admin.js"></script>
+</body>
+</html>

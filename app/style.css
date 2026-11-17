@@ -73,6 +73,78 @@ p, h1 { margin: 0; }
 .ky-luc { font-variant-numeric: tabular-nums; }
 .ky-luc b { font-weight: var(--weight-semibold); }
 
+.loi-chao {
+  max-width: calc(100vw - 2 * var(--gutter));
+  margin-top: calc(-1 * var(--space-2));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.loi-chao[hidden] { display: none; }
+.loi-chao b { font-weight: var(--weight-semibold); }
+
+/* Liên kết chữ nhỏ dưới nút "Bắt đầu", cách nút đủ xa để không bấm nhầm */
+.lien-ket {
+  margin-top: var(--space-6);
+  padding: var(--space-2);
+  font: inherit;
+  font-size: var(--text-small);
+  letter-spacing: var(--tracking-small);
+  color: var(--text-link);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.lien-ket:focus-visible { outline: 4px solid var(--focus-ring); outline-offset: 1px; }
+
+/* ---------- Màn Đăng ký (màn duy nhất được cuộn dọc) ---------- */
+.man-dang-ky { width: min(calc(100vw - 2 * var(--gutter)), 360px); }
+.form-dang-ky {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+  text-align: left;
+}
+.o-nhap { display: flex; flex-direction: column; gap: var(--space-1); }
+.o-nhap label {
+  font-size: var(--text-small);
+  letter-spacing: var(--tracking-small);
+  color: var(--text-secondary);
+}
+.o-nhap input {
+  width: 100%;
+  min-height: 44px;                      /* đủ lớn để bấm bằng ngón tay */
+  padding: var(--space-2) var(--space-3);
+  font: inherit;
+  font-size: max(16px, var(--text-body)); /* từ 16px để iPhone không tự phóng to trang */
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  -webkit-user-select: text;
+  user-select: text;
+}
+.o-nhap input:focus-visible { outline: 4px solid var(--focus-ring); outline-offset: 1px; }
+.o-nhap input[aria-invalid="true"] { border-color: var(--danger); }
+.loi-o, .loi-chung {
+  font-size: var(--text-small);
+  letter-spacing: var(--tracking-small);
+  color: var(--danger);
+}
+.loi-o[hidden], .loi-chung[hidden] { display: none; }
+.loi-chung { text-align: center; }
+.form-dang-ky .btn { align-self: center; }
+.muc-dich {
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 /* ---------- Nút chính ---------- */
 .btn {
   display: inline-flex;

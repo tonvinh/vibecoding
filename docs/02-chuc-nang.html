@@ -131,6 +131,169 @@
     </ul>
   </section>
 
+  <section id="mo-rong">
+    <h2>Mở rộng · Đăng ký người chơi và trang admin</h2>
+    <p>Phần bổ sung sau bản đầu. Người chơi phải đăng ký họ tên, email, số điện thoại trước khi chơi; dữ liệu nằm trong database trên máy chủ; admin đăng nhập để xem, tìm, xoá và xuất danh sách. Các mục F1–F9 ở trên giữ nguyên, trừ những điểm ghi trong bảng "Ảnh hưởng tới nội dung cũ" bên dưới.</p>
+
+    <h3>Đã chốt với chủ dự án</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Câu hỏi</th><th>Quyết định</th></tr>
+      <tr><td>Có lưu điểm kèm người đăng ký không?</td><td>Có: mỗi người chơi lưu <b>điểm cao nhất</b> và <b>số lượt đã chơi</b>. Không lưu từng lượt.</td></tr>
+      <tr><td>Email đã đăng ký được nhập lại thì sao?</td><td><b>Nhận là người cũ</b>: email là định danh, vào chơi tiếp bằng hồ sơ cũ, không tạo dòng mới. Trình duyệt nhớ người chơi nên lần sau không phải nhập lại.</td></tr>
+      <tr><td>Admin có mấy tài khoản?</td><td><b>Một tài khoản</b>, tên đăng nhập và mật khẩu đặt qua biến môi trường. Không có màn quản lý tài khoản.</td></tr>
+    </table></div>
+
+    <h3>Danh sách chức năng mới</h3>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Chức năng</th><th>Ai dùng</th><th>Ca test</th></tr>
+      <tr><td>F10</td><td><a href="#f10">Đăng ký trước khi chơi</a></td><td>Người chơi</td><td>TC-21, TC-22</td></tr>
+      <tr><td>F11</td><td><a href="#f11">Kiểm tra dữ liệu nhập</a></td><td>Người chơi</td><td>TC-23 → TC-26</td></tr>
+      <tr><td>F12</td><td><a href="#f12">Nhận lại người chơi cũ</a></td><td>Người chơi</td><td>TC-27 → TC-30</td></tr>
+      <tr><td>F13</td><td><a href="#f13">Lưu điểm cao nhất lên máy chủ</a></td><td>Người chơi</td><td>TC-31 → TC-34</td></tr>
+      <tr><td>F14</td><td><a href="#f14">Đăng nhập admin</a></td><td>Admin</td><td>TC-35 → TC-39</td></tr>
+      <tr><td>F15</td><td><a href="#f15">Xem danh sách người chơi</a></td><td>Admin</td><td>TC-40, TC-41</td></tr>
+      <tr><td>F16</td><td><a href="#f16">Tìm kiếm</a></td><td>Admin</td><td>TC-42 → TC-44</td></tr>
+      <tr><td>F17</td><td><a href="#f17">Xoá người chơi</a></td><td>Admin</td><td>TC-45, TC-46</td></tr>
+      <tr><td>F18</td><td><a href="#f18">Xuất file CSV</a></td><td>Admin</td><td>TC-47 → TC-50</td></tr>
+    </table></div>
+  </section>
+
+  <section id="f10">
+    <h2>F10 · Đăng ký trước khi chơi</h2>
+    <p><b>Kích hoạt:</b> mở trang game khi trình duyệt chưa nhớ người chơi nào.</p>
+    <ul>
+      <li>Hiện màn Đăng ký với ba ô: họ tên, email, số điện thoại. Cả ba bắt buộc.</li>
+      <li>Chưa đăng ký xong thì không vào được màn Bắt đầu, không chơi được.</li>
+      <li>Bấm "Tiếp tục": kiểm tra dữ liệu (F11), gửi lên máy chủ, lưu vào database, rồi chuyển sang màn Bắt đầu.</li>
+      <li>Trong lúc chờ máy chủ trả lời, nút bị khoá để không gửi hai lần.</li>
+      <li>Mất mạng hoặc máy chủ lỗi: hiện "Chưa gửi được, thử lại nhé", giữ nguyên những gì đã nhập, không vào game.</li>
+      <li>Dưới form có một dòng nói rõ thông tin dùng để làm gì. <span class="tag warn">Giả định G12</span></li>
+    </ul>
+  </section>
+
+  <section id="f11">
+    <h2>F11 · Kiểm tra dữ liệu nhập</h2>
+    <p>Kiểm tra hai lần: trên trình duyệt để báo lỗi ngay, và trên máy chủ để chắc chắn. Kết quả của máy chủ là kết quả cuối. Quy tắc chi tiết ở <a href="04-quy-tac-du-lieu.html#kiem-tra-nhap">Quy tắc &amp; dữ liệu › Kiểm tra dữ liệu nhập</a>.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Ô</th><th>Hợp lệ khi</th><th>Thông báo lỗi</th></tr>
+      <tr><td>Họ tên</td><td>2–60 ký tự, chỉ gồm chữ cái (có dấu), khoảng trắng, dấu <code>'</code> <code>-</code> <code>.</code></td><td>"Họ tên cần từ 2 đến 60 ký tự, không chứa số."</td></tr>
+      <tr><td>Email</td><td>Đúng dạng <code>ten@mien.xyz</code>, tối đa 254 ký tự</td><td>"Email chưa đúng định dạng."</td></tr>
+      <tr><td>Số điện thoại</td><td>Số di động Việt Nam 10 chữ số, đầu 03, 05, 07, 08, 09; chấp nhận viết <code>+84</code> hoặc có dấu cách, chấm, gạch <span class="tag warn">Giả định G10</span></td><td>"Số điện thoại cần 10 chữ số, ví dụ 0912 345 678."</td></tr>
+    </table></div>
+    <ul>
+      <li>Lỗi hiện ngay dưới ô sai, bằng chữ, không chỉ bằng màu. Bấm "Tiếp tục" khi còn lỗi thì con trỏ nhảy về ô sai đầu tiên.</li>
+      <li>Ô chỉ báo lỗi sau khi người dùng rời ô đó hoặc bấm "Tiếp tục", không báo khi đang gõ dở.</li>
+    </ul>
+  </section>
+
+  <section id="f12">
+    <h2>F12 · Nhận lại người chơi cũ</h2>
+    <ul>
+      <li><b>Cùng trình duyệt:</b> sau khi đăng ký, trình duyệt nhớ người chơi. Lần mở sau vào thẳng màn Bắt đầu, có dòng "Xin chào, [họ tên]".</li>
+      <li><b>Nhập lại email đã có</b> (đổi máy, xoá dữ liệu trình duyệt): không báo lỗi, không tạo dòng mới; vào chơi tiếp bằng hồ sơ cũ, điểm cao nhất lấy từ máy chủ.</li>
+      <li>Khi nhận lại theo email, họ tên và số điện thoại trong database <b>giữ nguyên bản đăng ký đầu tiên</b>, không bị ghi đè bởi lần nhập sau. <span class="tag warn">Giả định G9</span></li>
+      <li>Số điện thoại trùng nhưng email khác: coi là người khác, tạo hồ sơ mới. <span class="tag warn">Giả định G11</span></li>
+      <li><b>Đổi người chơi:</b> màn Bắt đầu có liên kết "Không phải bạn? Đổi người chơi". Bấm vào thì trình duyệt quên người hiện tại, xoá điểm cao nhất đang hiển thị, quay về màn Đăng ký. Dữ liệu trên máy chủ không bị xoá.</li>
+      <li>Hồ sơ đã bị admin xoá: lần mở sau trình duyệt tự quên và hiện lại màn Đăng ký.</li>
+    </ul>
+  </section>
+
+  <section id="f13">
+    <h2>F13 · Lưu điểm cao nhất lên máy chủ</h2>
+    <ul>
+      <li>Cuối mỗi lượt (F6), game gửi điểm lượt đó lên máy chủ. Máy chủ tăng số lượt thêm 1 và giữ lại điểm lớn hơn giữa điểm mới và điểm cao nhất cũ.</li>
+      <li>Việc gửi chạy ngầm: màn Kết thúc hiện ngay, không chờ máy chủ. "Kỷ lục mới!" vẫn xét theo quy tắc cũ (G3).</li>
+      <li>Gửi không được (mất mạng): game vẫn chơi tiếp bình thường; điểm được giữ lại trên trình duyệt và gửi bù vào lần kết thúc lượt kế tiếp hoặc lần mở trang kế tiếp.</li>
+      <li>Điểm cao nhất hiện trên màn hình là của <b>người chơi đang đăng ký</b>, không còn là của trình duyệt như F7.</li>
+      <li>Máy chủ chỉ nhận điểm là số nguyên từ 0 đến 33 (giới hạn lý thuyết của một lượt).</li>
+    </ul>
+    <div class="note"><b>Giới hạn đã biết</b>Điểm do trình duyệt tự tính rồi gửi lên, nên người rành kỹ thuật có thể gửi điểm giả trong khoảng 0–33. Nếu dùng điểm để trao giải có giá trị, cần xem lại phần này trước khi viết code.</div>
+  </section>
+
+  <section id="f14">
+    <h2>F14 · Đăng nhập admin</h2>
+    <p><b>Kích hoạt:</b> mở địa chỉ <code>/admin</code>.</p>
+    <ul>
+      <li>Chưa đăng nhập: hiện form tên đăng nhập và mật khẩu. Mọi trang và dữ liệu admin đều bị chặn khi chưa đăng nhập, kể cả gọi thẳng địa chỉ xuất CSV.</li>
+      <li>Chỉ có một tài khoản, lấy từ biến môi trường <code>ADMIN_USER</code> và <code>ADMIN_PASSWORD</code>. Thiếu một trong hai thì trang admin bị khoá hoàn toàn, không có mật khẩu mặc định.</li>
+      <li>Sai thông tin: hiện "Tên đăng nhập hoặc mật khẩu không đúng", không nói sai cái nào.</li>
+      <li>Sai 5 lần trong 15 phút từ cùng một địa chỉ mạng: khoá đăng nhập 15 phút.</li>
+      <li>Phiên đăng nhập hết hạn sau 8 giờ, hoặc khi bấm "Đăng xuất", hoặc khi máy chủ khởi động lại.</li>
+      <li>Trang game không có liên kết nào dẫn tới <code>/admin</code>.</li>
+    </ul>
+  </section>
+
+  <section id="f15">
+    <h2>F15 · Xem danh sách người chơi</h2>
+    <ul>
+      <li>Bảng gồm: họ tên, email, số điện thoại, điểm cao nhất, số lượt, thời điểm đăng ký (giờ Việt Nam).</li>
+      <li>Mặc định xếp người đăng ký mới nhất lên đầu. Đổi được sang xếp theo điểm cao nhất giảm dần (bằng điểm thì ai đăng ký trước đứng trên).</li>
+      <li>Mỗi trang 50 dòng, có nút sang trang. Phía trên bảng hiện tổng số người chơi.</li>
+      <li>Chưa có ai đăng ký: hiện "Chưa có người chơi nào." thay cho bảng trống.</li>
+    </ul>
+  </section>
+
+  <section id="f16">
+    <h2>F16 · Tìm kiếm</h2>
+    <ul>
+      <li>Một ô tìm duy nhất, tìm cùng lúc trong họ tên, email và số điện thoại; khớp một phần là đủ.</li>
+      <li>Không phân biệt hoa thường và không phân biệt dấu: gõ <code>nguyen</code> ra cả "Nguyễn".</li>
+      <li>Số điện thoại tìm theo chữ số: gõ <code>0912 345</code> hay <code>0912345</code> cho cùng kết quả.</li>
+      <li>Kết quả cập nhật sau khi ngừng gõ 0,3 giây hoặc bấm Enter; hiện "Tìm thấy N người chơi". Không có kết quả thì hiện "Không tìm thấy ai khớp với '[từ khoá]'."</li>
+      <li>Xoá trắng ô tìm thì quay về danh sách đầy đủ.</li>
+    </ul>
+  </section>
+
+  <section id="f17">
+    <h2>F17 · Xoá người chơi</h2>
+    <ul>
+      <li>Mỗi dòng có nút "Xoá". Bấm thì hiện hộp xác nhận ghi rõ họ tên và email của người sắp xoá, kèm câu "Không thể hoàn tác".</li>
+      <li>Xác nhận xong: hồ sơ bị xoá hẳn khỏi database (cả điểm), dòng biến mất khỏi bảng, tổng số giảm 1, vị trí trang và từ khoá tìm giữ nguyên.</li>
+      <li>Xoá từng người một; không có xoá hàng loạt, không có thùng rác. <span class="tag warn">Giả định G13</span></li>
+      <li>Người bị xoá có thể đăng ký lại bằng chính email đó; khi ấy là hồ sơ mới, điểm 0.</li>
+    </ul>
+  </section>
+
+  <section id="f18">
+    <h2>F18 · Xuất file CSV</h2>
+    <ul>
+      <li>Nút "Xuất CSV" tải về file <code>nguoi-choi-NNNNTTNN-GGPP.csv</code> (ngày giờ lúc xuất, giờ Việt Nam).</li>
+      <li>File chứa <b>toàn bộ kết quả đang lọc</b>, không chỉ trang đang xem: ô tìm trống thì là tất cả người chơi, đang tìm thì chỉ những người khớp. Thứ tự dòng giống thứ tự đang chọn trên bảng.</li>
+      <li>Cột: Họ tên, Email, Số điện thoại, Điểm cao nhất, Số lượt chơi, Thời điểm đăng ký.</li>
+      <li>Mở bằng Excel đọc đúng tiếng Việt có dấu. Định dạng chi tiết ở <a href="04-quy-tac-du-lieu.html#csv">Quy tắc &amp; dữ liệu › Định dạng CSV</a>.</li>
+      <li>Danh sách rỗng vẫn xuất được, file chỉ có dòng tiêu đề.</li>
+    </ul>
+  </section>
+
+  <section id="mo-rong-gia-dinh">
+    <h2>Mở rộng · Giả định mới</h2>
+    <p>Những chỗ yêu cầu chưa nói rõ, tài liệu tự chọn một hướng. Nối tiếp G1–G7 ở trang Tổng quan.</p>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Giả định</th><th>Lý do</th><th>Nếu đổi</th></tr>
+      <tr><td>G8</td><td>Database là PostgreSQL: một dịch vụ <code>db</code> riêng trong <code>docker-compose.yml</code>, dữ liệu nằm trong volume của Docker. <b>Đã chốt với chủ dự án</b>, thay cho hướng SQLite ban đầu.</td><td>Chủ dự án yêu cầu. Database tách khỏi máy chủ game nên dựng lại game không đụng tới dữ liệu.</td><td>Đổi sang database khác thì sửa dịch vụ <code>db</code> và phần kết nối của máy chủ; tài liệu chức năng không đổi.</td></tr>
+      <tr><td>G9</td><td>Nhập lại email đã có: giữ họ tên và số điện thoại của lần đăng ký đầu, không ghi đè.</td><td>Không có bước xác minh email, nên ai biết email của người khác cũng nhập được. Không ghi đè thì họ không sửa được thông tin liên hệ của người kia.</td><td>Nếu muốn người chơi tự sửa thông tin, cần thêm bước xác minh (mã gửi qua email).</td></tr>
+      <tr><td>G10</td><td>Chỉ nhận số di động Việt Nam 10 chữ số.</td><td>Game tiếng Việt, người chơi trong nước.</td><td>Nhận số quốc tế hoặc số bàn thì nới quy tắc ở F11 và các ca TC-25, TC-26.</td></tr>
+      <tr><td>G11</td><td>Số điện thoại được phép trùng giữa các email khác nhau.</td><td>Email mới là định danh; người trong một nhà có thể dùng chung số.</td><td>Nếu mỗi số chỉ được một hồ sơ, thêm thông báo lỗi trùng số ở F11.</td></tr>
+      <tr><td>G12</td><td>Form có một dòng thông báo mục đích dùng thông tin, không có ô đánh dấu đồng ý.</td><td>Yêu cầu chưa nói mục đích thu thập. Câu chữ hiện là bản tạm.</td><td>Chủ dự án cần cho câu chữ chính thức; nếu cần đồng ý rõ ràng thì thêm ô đánh dấu bắt buộc.</td></tr>
+      <tr><td>G13</td><td>Xoá là xoá hẳn, từng người một.</td><td>Đây là dữ liệu cá nhân; khi đã xoá thì không nên còn giữ bản nào.</td><td>Thêm xoá hàng loạt thì cần ô chọn ở mỗi dòng và ca test riêng.</td></tr>
+      <tr><td>G14</td><td>Phiên đăng nhập admin giữ trong bộ nhớ máy chủ; khởi động lại máy chủ thì phải đăng nhập lại.</td><td>Chỉ một admin, đăng nhập lại không tốn công; đỡ một bảng trong database.</td><td>Muốn giữ phiên qua lần khởi động lại thì lưu phiên vào database.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="mo-rong-anh-huong">
+    <h2>Mở rộng · Ảnh hưởng tới nội dung cũ</h2>
+    <p>Nội dung cũ vẫn để nguyên trong tài liệu. Bảng này ghi những chỗ mà phần mở rộng làm thay đổi cách hiểu; khi hai bên khác nhau thì theo phần mở rộng.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Chỗ cũ</th><th>Nội dung cũ</th><th>Sau khi mở rộng</th></tr>
+      <tr><td>T10, TC-10, G6</td><td>Mở file bằng <code>file://</code>, không cần máy chủ.</td><td>Đăng ký cần máy chủ và database, nên game phải mở qua địa chỉ của máy chủ (<code>http://…</code>). Mở bằng <code>file://</code> sẽ dừng ở màn Đăng ký với thông báo không gửi được. <b>Tiêu chí T10 không còn áp dụng.</b></td></tr>
+      <tr><td><code>YEU-CAU.md</code> mục 2 và mục 5</td><td>"Không có máy chủ"; "đăng nhập" nằm ngoài phạm vi.</td><td>Có máy chủ lưu dữ liệu. Đăng nhập chỉ dành cho admin; người chơi vẫn không có mật khẩu. Bảng xếp hạng công khai vẫn ngoài phạm vi.</td></tr>
+      <tr><td>F1</td><td>Bấm "Bắt đầu" là chơi.</td><td>Không đổi, nhưng chỉ tới được màn Bắt đầu sau khi đã đăng ký (F10) hoặc được nhận lại (F12).</td></tr>
+      <tr><td>F7</td><td>Điểm cao nhất là của trình duyệt, lưu trong <code>localStorage</code>.</td><td>Điểm cao nhất là của người chơi, nguồn chính là máy chủ. <code>localStorage</code> giữ bản sao để hiện ngay và để gửi bù khi mất mạng (F13).</td></tr>
+      <tr><td>Trang 04, "Trạng thái của game"</td><td>Ba trạng thái; không có đường quay về <code>BAT_DAU</code>.</td><td>Thêm trạng thái <code>DANG_KY</code> đứng trước <code>BAT_DAU</code>. Vẫn không có đường từ <code>KET_THUC</code> về <code>BAT_DAU</code> ngoài tải lại trang.</td></tr>
+      <tr><td>Trang 05, "Ma trận môi trường"</td><td>Các trình duyệt mở bằng <code>file://</code>.</td><td>Các ca TC-01 → TC-20 chạy lại qua địa chỉ máy chủ, sau khi đã đăng ký một người chơi thử.</td></tr>
+    </table></div>
+  </section>
+
   <nav class="pager">
     <a href="01-tong-quan.html"><small>Trước</small>← 01 · Tổng quan</a>
     <a href="03-man-hinh.html"><small>Tiếp</small>03 · Màn hình →</a>
