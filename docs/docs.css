@@ -1,0 +1,160 @@
+/* Kiểu dùng chung cho bộ tài liệu — chỉ dùng biến từ ../design/tokens.css */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--nav-height) + var(--space-4)); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-text);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 4px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-xs); }
+
+/* ---------- Nav kính mờ ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 10;
+  min-height: var(--nav-height);
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nav-inner {
+  max-width: var(--container-max); margin: 0 auto; min-height: var(--nav-height);
+  padding: 0 var(--gutter);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+}
+.nav-brand { font-weight: var(--weight-semibold); color: var(--text-primary); white-space: nowrap; }
+.nav-brand:hover { text-decoration: none; }
+.nav-links {
+  display: flex; gap: var(--space-5); overflow-x: auto; white-space: nowrap;
+  font-size: var(--text-caption); letter-spacing: var(--tracking-caption);
+  padding: var(--space-3) 0;
+}
+.nav-links a { color: var(--text-primary); opacity: .7; }
+.nav-links a:hover { opacity: 1; text-decoration: none; }
+.nav-links a[aria-current="page"] { opacity: 1; font-weight: var(--weight-semibold); }
+
+/* ---------- Bố cục ---------- */
+.container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--gutter); }
+.page-head { padding: var(--space-20) 0 var(--space-12); }
+.eyebrow {
+  font-size: var(--text-small); font-weight: var(--weight-semibold);
+  color: var(--text-secondary); letter-spacing: var(--tracking-small); margin: 0 0 var(--space-2);
+}
+h1 {
+  font-family: var(--font-display); font-size: var(--text-display); font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight); letter-spacing: var(--tracking-display); margin: 0 0 var(--space-4);
+}
+.lead { font-size: var(--text-lead); color: var(--text-secondary); line-height: 1.38; max-width: 60ch; margin: 0; }
+section { padding: var(--space-12) 0; border-top: 1px solid var(--border-subtle); }
+h2 {
+  font-family: var(--font-display); font-size: var(--text-h3); font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug); margin: 0 0 var(--space-6);
+}
+h3 { font-size: var(--text-lead); font-weight: var(--weight-semibold); line-height: var(--leading-heading); margin: var(--space-8) 0 var(--space-3); }
+p, ul, ol { max-width: 70ch; margin: 0 0 var(--space-4); }
+li { margin-bottom: var(--space-2); }
+code {
+  font-family: var(--font-mono); font-size: .88em; letter-spacing: 0;
+  background: var(--bg-subtle); padding: 2px 6px; border-radius: var(--radius-xs);
+}
+pre {
+  background: var(--bg-subtle); border-radius: var(--radius-md); padding: var(--space-4);
+  overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-small); line-height: 1.5; letter-spacing: 0;
+  margin: 0 0 var(--space-4);
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+
+/* ---------- Bảng ---------- */
+.table-wrap { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: var(--text-small); letter-spacing: var(--tracking-small); line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-subtle); }
+tr:last-child td { border-bottom: 0; }
+th { background: var(--bg-subtle); font-weight: var(--weight-semibold); white-space: nowrap; }
+td.num, th.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- Nhãn & ghi chú ---------- */
+.tag {
+  display: inline-block; font-size: var(--text-caption); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-caption);
+  padding: 2px 8px; border-radius: var(--radius-pill); background: var(--bg-subtle); color: var(--text-secondary); white-space: nowrap;
+}
+.tag.accent { background: var(--accent); color: var(--accent-text); }
+.tag.warn { color: var(--warning); }
+.tag.ok { color: var(--success); }
+.note {
+  background: var(--bg-subtle); border-radius: var(--radius-lg); padding: var(--space-5) var(--space-6);
+  margin: 0 0 var(--space-6); max-width: 70ch;
+}
+.note > :last-child { margin-bottom: 0; }
+.note b:first-child { display: block; margin-bottom: var(--space-1); }
+
+/* ---------- Thẻ ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-5); margin: 0 0 var(--space-6); }
+.card {
+  display: block; background: var(--surface-card-alt); border-radius: var(--radius-lg);
+  padding: var(--space-6); color: var(--text-primary);
+}
+a.card { transition: transform var(--duration-fast) var(--ease-out); }
+a.card:hover { text-decoration: none; transform: translateY(-2px); }
+.card .num { font-size: var(--text-small); color: var(--text-secondary); font-weight: var(--weight-semibold); }
+.card h3 { margin: var(--space-1) 0 var(--space-2); font-size: var(--text-h5); }
+.card p { margin: 0; font-size: var(--text-small); color: var(--text-secondary); letter-spacing: var(--tracking-small); }
+.stat { font-family: var(--font-display); font-size: var(--text-h2); font-weight: var(--weight-semibold); line-height: 1.1; }
+
+/* ---------- Nút ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: var(--button-height-md); padding: 8px 18px;
+  font: inherit; line-height: 1.18; border-radius: var(--radius-pill); border: 1px solid transparent;
+  background: var(--accent); color: var(--accent-text);
+}
+.btn:hover { background: var(--accent-hover); text-decoration: none; }
+.btn.lg { min-height: var(--button-height-lg); padding: 12px 28px; }
+
+/* ---------- Khung phác thảo màn hình ---------- */
+.mocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-6); margin: 0 0 var(--space-6); }
+.mock {
+  background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5); text-align: center; box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-4); min-height: 420px; justify-content: center;
+}
+.mock-title { font-family: var(--font-display); font-size: var(--text-h4); font-weight: var(--weight-semibold); line-height: 1.1; }
+.mock-sub { font-size: var(--text-small); color: var(--text-secondary); letter-spacing: var(--tracking-small); }
+.mock-hud { display: flex; justify-content: space-between; width: 100%; max-width: 216px; font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+.mock-hud .danger { color: var(--danger); }
+.mock-grid { display: grid; grid-template-columns: repeat(3, 64px); gap: var(--space-3); }
+.mock-grid span {
+  width: 64px; height: 64px; border-radius: var(--radius-lg); background: var(--bg-subtle);
+  display: flex; align-items: center; justify-content: center; font-size: 30px; line-height: 1;
+}
+.mock-grid span.hit { background: var(--accent); }
+.mock-score { font-family: var(--font-display); font-size: var(--text-display); font-weight: var(--weight-semibold); line-height: 1; }
+.mock-caption { text-align: center; font-size: var(--text-small); color: var(--text-secondary); margin-top: var(--space-3); }
+
+/* ---------- Sơ đồ trạng thái ---------- */
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin: 0 0 var(--space-6); }
+.flow .state {
+  border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+  font-weight: var(--weight-semibold); background: var(--surface-card);
+}
+.flow .arrow { font-size: var(--text-small); color: var(--text-secondary); letter-spacing: var(--tracking-small); }
+
+/* ---------- Chuyển trang ---------- */
+.pager {
+  display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap;
+  padding: var(--space-10) 0 var(--space-20); border-top: 1px solid var(--border-subtle);
+}
+.pager a { font-size: var(--text-body-lg); }
+.pager small { display: block; font-size: var(--text-caption); color: var(--text-secondary); }
+
+@media (max-width: 734px) {
+  .page-head { padding: var(--space-12) 0 var(--space-8); }
+  .nav-inner { flex-direction: column; align-items: flex-start; gap: 0; padding-top: var(--space-2); }
+  .nav-links { width: 100%; padding-top: var(--space-2); }
+}

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>05 · Kế hoạch test — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-brand" href="index.html">Đập Chuột · Tài liệu</a>
+  <div class="nav-links">
+    <a href="index.html">Mục lục</a>
+    <a href="01-tong-quan.html">Tổng quan</a>
+    <a href="02-chuc-nang.html">Chức năng</a>
+    <a href="03-man-hinh.html">Màn hình</a>
+    <a href="04-quy-tac-du-lieu.html">Quy tắc &amp; dữ liệu</a>
+    <a href="05-ke-hoach-test.html" aria-current="page">Kế hoạch test</a>
+  </div>
+</div></nav>
+
+<main class="container">
+  <header class="page-head">
+    <p class="eyebrow">05</p>
+    <h1>Kế hoạch test</h1>
+    <p class="lead">Kiểm thử bằng tay là chính, vì game nhỏ và phần lớn tiêu chí là thứ nhìn thấy được. Mỗi ca ghi rõ bước làm và kết quả mong đợi.</p>
+  </header>
+
+  <section>
+    <h2>Cách tiếp cận</h2>
+    <ul>
+      <li><b>Test tay theo tiêu chí T1–T10:</b> 10 ca chính, chạy trên mọi trình duyệt trong ma trận.</li>
+      <li><b>Test tay ca biên:</b> 10 ca bổ sung, chạy trên ít nhất một trình duyệt máy tính và một điện thoại.</li>
+      <li><b>Hỗ trợ quan sát:</b> những ca khó thấy bằng mắt (hai chuột cùng lúc, lặp ô) dùng thêm quay màn hình xem chậm, hoặc ghi nhật ký sự kiện ra console trong lúc phát triển (gỡ bỏ trước khi nghiệm thu).</li>
+    </ul>
+    <div class="note"><b>Dụng cụ</b>Đồng hồ bấm giờ (điện thoại thứ hai), công cụ nhà phát triển của trình duyệt (tab Console và Application/Storage), một điện thoại thật có màn rộng khoảng 360–390 px.</div>
+  </section>
+
+  <section>
+    <h2>Ma trận môi trường</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Môi trường</th><th>Cách mở</th><th>Chạy ca</th></tr>
+      <tr><td>Chrome máy tính (bản mới nhất)</td><td><code>file://</code></td><td>Tất cả</td></tr>
+      <tr><td>Safari máy tính (bản mới nhất)</td><td><code>file://</code></td><td>TC-01 → TC-10</td></tr>
+      <tr><td>Firefox máy tính (bản mới nhất)</td><td><code>file://</code></td><td>TC-01 → TC-10</td></tr>
+      <tr><td>Safari trên iPhone</td><td>Mở file từ ứng dụng Tệp, hoặc qua mạng nội bộ</td><td>TC-09 và các ca biên về chạm</td></tr>
+      <tr><td>Chrome trên Android</td><td>Mở file từ trình quản lý tệp, hoặc qua mạng nội bộ</td><td>TC-09 và các ca biên về chạm</td></tr>
+      <tr><td>Chế độ giả lập 360×640 trên Chrome</td><td>Công cụ nhà phát triển</td><td>TC-02, kiểm bố cục</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Ca chính theo tiêu chí</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mã</th><th>Tiêu chí</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th></tr>
+      <tr><td>TC-01</td><td>T1</td><td>Mở file game, mở Console, chơi trọn một lượt.</td><td>Game chạy; Console không có lỗi hay cảnh báo nào của game.</td></tr>
+      <tr><td>TC-02</td><td>T2</td><td>Vào màn Đang chơi, đếm ô. Lặp lại ở bề rộng 360 px.</td><td>Đúng 9 ô, 3 hàng × 3 cột, ô vuông, mỗi ô ≥ 80 px, không tràn ngang.</td></tr>
+      <tr><td>TC-03</td><td>T3</td><td>Bấm "Bắt đầu" cùng lúc bấm đồng hồ ngoài; dừng đồng hồ khi màn Kết thúc hiện. Làm 3 lần.</td><td>Mỗi lần trong khoảng 9,8–10,2 giây (tính cả sai số tay, lấy trung bình).</td></tr>
+      <tr><td>TC-04</td><td>T4</td><td>Trong một lượt: đập trúng 3 con, bấm ô trống 5 lần.</td><td>Điểm là 3. Mỗi lần trúng tăng đúng 1; bấm ô trống điểm đứng yên.</td></tr>
+      <tr><td>TC-05</td><td>T5</td><td>Quay màn hình 3 lượt không bấm gì, xem lại chậm.</td><td>Không lúc nào có 2 chuột; không con nào hiện lại đúng ô liền trước. Mỗi lượt có đúng 9 chuột.</td></tr>
+      <tr><td>TC-06</td><td>T6</td><td>Bấm liên tục vào vùng lưới từ giây thứ 9 đến 2 giây sau khi hết giờ.</td><td>Điểm ở màn Kết thúc bằng điểm lúc đồng hồ về 0, không tăng thêm. Không vô tình vào lượt mới.</td></tr>
+      <tr><td>TC-07</td><td>T7</td><td>Chơi lượt 1 được vài điểm, bấm "Chơi lại".</td><td>Điểm hiện 0, đồng hồ hiện 10, bảng trống rồi chuột mới hiện bình thường.</td></tr>
+      <tr><td>TC-08</td><td>T8</td><td>Xoá dữ liệu trang. Chơi được N điểm (N ≥ 1). Tải lại trang.</td><td>Màn Kết thúc hiện "Kỷ lục mới!" và điểm cao nhất N. Sau khi tải lại, màn Bắt đầu vẫn hiện N.</td></tr>
+      <tr><td>TC-09</td><td>T9</td><td>Trên điện thoại thật: chơi một lượt, bấm thật nhanh, có lúc bấm đôi vào cùng một chỗ.</td><td>Đập được chuột bằng ngón tay; trang không phóng to, không cuộn, không bôi chọn chữ, không hiện menu ngữ cảnh.</td></tr>
+      <tr><td>TC-10</td><td>T10</td><td>Tắt mạng. Mở file bằng cách bấm đúp (địa chỉ bắt đầu bằng <code>file://</code>).</td><td>Game hiển thị đúng giao diện và chơi được trọn lượt.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Ca biên</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mã</th><th>Liên quan</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th></tr>
+      <tr><td>TC-11</td><td>B4</td><td>Bấm đôi thật nhanh vào một con chuột.</td><td>Chỉ +1.</td></tr>
+      <tr><td>TC-12</td><td>L5</td><td>Quay màn hình, đo khoảng trống sau khi đập và sau khi chuột tự mất.</td><td>Cả hai trường hợp bảng trống khoảng 0,3 giây (±0,05).</td></tr>
+      <tr><td>TC-13</td><td>L4</td><td>Quay màn hình, đo thời gian một con chuột không bị đập.</td><td>Khoảng 0,8 giây (±0,05).</td></tr>
+      <tr><td>TC-14</td><td>Mục 3</td><td>Quan sát đồng hồ ở cuối lượt.</td><td>Số 4 màu thường; 3, 2, 1 màu đỏ. Lượt sau bắt đầu lại bằng màu thường.</td></tr>
+      <tr><td>TC-15</td><td>B8, G3</td><td>Kỷ lục đang là N. Chơi một lượt đạt đúng N, rồi một lượt thấp hơn N.</td><td>Cả hai lượt không hiện "Kỷ lục mới!"; điểm cao nhất vẫn là N.</td></tr>
+      <tr><td>TC-16</td><td>G3</td><td>Xoá dữ liệu trang. Chơi một lượt không bấm gì.</td><td>Điểm 0, không hiện "Kỷ lục mới!", điểm cao nhất 0.</td></tr>
+      <tr><td>TC-17</td><td>Quy tắc đọc</td><td>Trong công cụ nhà phát triển, sửa giá trị lưu thành <code>abc</code>, rồi <code>-3</code>, rồi <code>2.5</code>; tải lại trang sau mỗi lần.</td><td>Mỗi lần màn Bắt đầu hiện điểm cao nhất 0, không lỗi Console.</td></tr>
+      <tr><td>TC-18</td><td>F7</td><td>Mở game trong cửa sổ riêng tư, hoặc với lưu trữ bị chặn; chơi 2 lượt.</td><td>Game chạy bình thường, không lỗi; kỷ lục được giữ giữa 2 lượt.</td></tr>
+      <tr><td>TC-19</td><td>B6, G4</td><td>Bắt đầu lượt, chuyển sang tab khác 15 giây, quay lại.</td><td>Thấy màn Kết thúc; điểm bằng điểm lúc rời tab.</td></tr>
+      <tr><td>TC-20</td><td>B7, F8</td><td>Chơi 5 lượt liên tiếp, mỗi lần bấm "Chơi lại" nhiều lần thật nhanh.</td><td>Lượt nào cũng dài 10 giây, vẫn chỉ 1 chuột mỗi lúc, nhịp chuột không nhanh dần lên.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Kiểm giao diện</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mã</th><th>Kiểm gì</th><th>Kết quả mong đợi</th></tr>
+      <tr><td>UI-01</td><td>Bề rộng 360, 390, 768, 1280 px</td><td>Ba màn đều canh giữa, không cuộn ngang, không phải cuộn dọc để thấy nút.</td></tr>
+      <tr><td>UI-02</td><td>Chế độ tối của hệ thống</td><td>Chữ, lưới, chuột và đồng hồ đỏ đều đọc rõ.</td></tr>
+      <tr><td>UI-03</td><td>Điện thoại xoay ngang</td><td>Lưới và hai chỉ số vẫn nằm gọn trong màn hình.</td></tr>
+      <tr><td>UI-04</td><td>Bật "giảm chuyển động" của hệ thống</td><td>Không còn hiệu ứng phóng/nảy; vẫn thấy rõ đập trúng.</td></tr>
+      <tr><td>UI-05</td><td>Điểm lên hai chữ số</td><td>Chỉ số điểm và đồng hồ không xô lệch bố cục.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Điều kiện nghiệm thu</h2>
+    <ul>
+      <li>TC-01 → TC-10 đạt trên cả ba trình duyệt máy tính; TC-09 đạt trên ít nhất một điện thoại thật.</li>
+      <li>TC-11 → TC-20 và UI-01 → UI-05 đạt trên Chrome máy tính; các ca về chạm đạt trên điện thoại.</li>
+      <li>Không còn nhật ký gỡ lỗi trong Console.</li>
+      <li>Không có lỗi nào làm sai điểm, sai thời lượng lượt, hoặc làm game đứng.</li>
+    </ul>
+    <h3>Mẫu ghi kết quả</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Mã ca</th><th>Môi trường</th><th>Ngày</th><th>Kết quả</th><th>Ghi chú</th></tr>
+      <tr><td>TC-03</td><td>Chrome máy tính</td><td>…</td><td><span class="tag ok">Đạt</span> / <span class="tag warn">Không đạt</span></td><td>Ví dụ: 10,05 · 9,98 · 10,10 giây</td></tr>
+    </table></div>
+  </section>
+
+  <section id="mo-rong">
+    <h2>Mở rộng · Test đăng ký người chơi và trang admin</h2>
+    <p>Các ca cho F10–F18. Vẫn test tay là chính, thêm một ít kiểm tra bằng lệnh vì phần này có máy chủ và database.</p>
+    <ul>
+      <li><b>Test tay trên giao diện:</b> TC-21 → TC-50, đi theo từng chức năng.</li>
+      <li><b>Test gọi thẳng máy chủ:</b> TC-51 → TC-60, dùng <code>curl</code> hoặc tab Network, vì giao diện đã chặn sẵn nên không thử được bằng tay.</li>
+      <li><b>Chạy lại ca cũ:</b> TC-01 → TC-20 chạy lại qua địa chỉ máy chủ sau khi đăng ký một người chơi thử, để chắc phần mới không làm hỏng game. Riêng TC-10 (mở bằng <code>file://</code>) không còn áp dụng, thay bằng TC-22.</li>
+    </ul>
+    <div class="note"><b>Chuẩn bị</b>Chạy máy chủ bằng Docker với <code>ADMIN_USER</code>, <code>ADMIN_PASSWORD</code> dành riêng cho test và một volume dữ liệu trống. Mở game ở <code>http://localhost:3000</code>, admin ở <code>http://localhost:3000/admin</code>. Chỉ dùng dữ liệu giả: tên bịa, email <code>@example.com</code>, số điện thoại bịa. Cần thêm: Excel hoặc Google Sheets để mở file CSV, một cửa sổ riêng tư để giả làm "máy khác".</div>
+    <h3>Ma trận môi trường bổ sung</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Môi trường</th><th>Cách mở</th><th>Chạy ca</th></tr>
+      <tr><td>Chrome máy tính</td><td>Địa chỉ máy chủ</td><td>Tất cả ca mới</td></tr>
+      <tr><td>Safari và Firefox máy tính</td><td>Địa chỉ máy chủ</td><td>TC-21 → TC-34 (phía người chơi), TC-35, TC-40, TC-47</td></tr>
+      <tr><td>Safari trên iPhone, Chrome trên Android</td><td>Qua mạng nội bộ tới máy chủ</td><td>TC-21, TC-23 → TC-27, UI-06 → UI-08</td></tr>
+      <tr><td>Excel và Google Sheets</td><td>Mở file CSV tải về</td><td>TC-48</td></tr>
+    </table></div>
+  </section>
+
+  <section id="test-dang-ky">
+    <h2>Ca test · Đăng ký và nhận lại người chơi</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mã</th><th>Liên quan</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th></tr>
+      <tr><td>TC-21</td><td>F10</td><td>Xoá dữ liệu trang. Mở game. Điền ba ô hợp lệ, bấm "Tiếp tục".</td><td>Mở ra là màn Đăng ký, không thấy nút "Bắt đầu". Sau khi gửi: sang màn Bắt đầu, có "Xin chào, [họ tên]". Trang admin có thêm đúng một dòng với đúng thông tin, điểm 0, số lượt 0.</td></tr>
+      <tr><td>TC-22</td><td>F10, B26</td><td>Dừng máy chủ (hoặc tắt mạng) rồi bấm "Tiếp tục" với dữ liệu hợp lệ. Lặp lại khi mở game bằng <code>file://</code>.</td><td>Hiện "Chưa gửi được, thử lại nhé."; ba ô giữ nguyên nội dung; không vào được game. Bật lại máy chủ, bấm lần nữa thì đăng ký được.</td></tr>
+      <tr><td>TC-23</td><td>F11</td><td>Bấm "Tiếp tục" khi cả ba ô trống.</td><td>Cả ba ô báo lỗi bằng chữ; con trỏ ở ô Họ tên; không có yêu cầu nào gửi tới máy chủ (xem tab Network).</td></tr>
+      <tr><td>TC-24</td><td>F11, họ tên</td><td>Thử lần lượt: <code>A</code>; <code>An 2</code>; chuỗi 61 ký tự; <code>&lt;b&gt;An&lt;/b&gt;</code>. Rồi thử <code>O'Brien</code>; <code>Trần-Lê Vy</code>; <code>&nbsp;&nbsp;nguyễn&nbsp;&nbsp;&nbsp;văn an&nbsp;</code>.</td><td>Bốn giá trị đầu báo lỗi họ tên. Ba giá trị sau được nhận; cái cuối lưu thành <code>nguyễn văn an</code> (xem ở admin).</td></tr>
+      <tr><td>TC-25</td><td>F11, email</td><td>Thử: <code>an@example</code>; <code>an@@example.com</code>; <code>an example@x.vn</code>; <code>@x.vn</code>. Rồi thử <code>&nbsp;An@Example.COM&nbsp;</code>.</td><td>Bốn giá trị đầu báo "Email chưa đúng định dạng." Cái cuối được nhận, admin thấy <code>an@example.com</code>.</td></tr>
+      <tr><td>TC-26</td><td>F11, G10</td><td>Thử: <code>0912</code>; <code>0212345678</code>; <code>09123456789</code>; <code>0912abc678</code>. Rồi thử <code>0912.345.678</code> và <code>+84 912 345 678</code> (mỗi lần một email khác).</td><td>Bốn giá trị đầu báo lỗi số điện thoại. Hai giá trị sau được nhận, admin thấy cùng một số <code>0912 345 678</code>.</td></tr>
+      <tr><td>TC-27</td><td>F12</td><td>Sau TC-21: tải lại trang; đóng hẳn trình duyệt rồi mở lại.</td><td>Cả hai lần vào thẳng màn Bắt đầu với lời chào và điểm cao nhất cũ, không hỏi lại thông tin.</td></tr>
+      <tr><td>TC-28</td><td>F12, B12, B13</td><td>Người A đã chơi được N điểm. Mở cửa sổ riêng tư, đăng ký bằng email của A viết HOA, họ tên và số điện thoại khác.</td><td>Vào màn Bắt đầu, điểm cao nhất hiện N. Admin vẫn chỉ có một dòng cho email đó, họ tên và số điện thoại là của lần đầu, thời điểm đăng ký không đổi.</td></tr>
+      <tr><td>TC-29</td><td>F12, G11</td><td>Đăng ký người B bằng email mới nhưng trùng số điện thoại của A.</td><td>Đăng ký được; admin có hai dòng khác email, cùng số điện thoại.</td></tr>
+      <tr><td>TC-30</td><td>F12</td><td>Người A đang ở màn Bắt đầu với điểm cao nhất N. Bấm "Đổi người chơi", đăng ký người C mới.</td><td>Về màn Đăng ký với ba ô trống. Sau khi đăng ký C: lời chào là C, điểm cao nhất 0. Dòng của A ở admin còn nguyên, điểm N.</td></tr>
+      <tr><td>TC-31</td><td>F13</td><td>Người mới chơi ba lượt đạt lần lượt (ví dụ) 5, 9, 7 điểm. Tải lại trang admin sau mỗi lượt.</td><td>Sau mỗi lượt số lượt tăng 1 (1, 2, 3). Điểm cao nhất lần lượt 5, 9, 9.</td></tr>
+      <tr><td>TC-32</td><td>F13, B15, B16</td><td>Tắt mạng. Chơi hai lượt đạt 4 và 8 điểm. Bật mạng, chơi thêm một lượt đạt 3 điểm.</td><td>Khi mất mạng game vẫn chơi được, màn Kết thúc hiện bình thường, không báo lỗi. Sau lượt thứ ba admin thấy điểm cao nhất 8.</td></tr>
+      <tr><td>TC-33</td><td>F13, B18</td><td>Cùng một email trên hai trình duyệt. Máy 1 đạt 6 điểm, máy 2 đạt 10 điểm. Tải lại trang ở máy 1.</td><td>Admin: điểm cao nhất 10, số lượt 2. Máy 1 sau khi tải lại hiện điểm cao nhất 10.</td></tr>
+      <tr><td>TC-34</td><td>F12, B17</td><td>Người A đang chơi dở một lượt. Ở admin, xoá A. Chờ hết lượt, bấm "Chơi lại". Rồi đăng ký lại bằng email của A.</td><td>Lượt đang chơi không bị ngắt, màn Kết thúc hiện bình thường. Bấm "Chơi lại" thì về màn Đăng ký. Đăng ký lại tạo hồ sơ mới: điểm 0, số lượt 0, thời điểm đăng ký mới.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="test-admin">
+    <h2>Ca test · Trang admin</h2>
+    <p>Trước các ca từ TC-40: tạo sẵn dữ liệu mẫu gồm ít nhất 120 người chơi giả (bằng kịch bản gọi <code>/api/dang-ky</code>), trong đó có "Nguyễn Văn An", "Ngô Uyên", "Đỗ Đức Dũng", vài email cùng miền <code>@example.com</code>, và vài người có điểm.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Mã</th><th>Liên quan</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th></tr>
+      <tr><td>TC-35</td><td>F14</td><td>Mở <code>/admin</code> khi chưa đăng nhập. Nhập đúng tên và mật khẩu.</td><td>Trước: chỉ thấy form đăng nhập, không có dữ liệu người chơi nào trong trang hay trong tab Network. Sau: thấy danh sách.</td></tr>
+      <tr><td>TC-36</td><td>F14</td><td>Nhập sai mật khẩu; rồi sai tên đăng nhập.</td><td>Cả hai lần cùng một câu "Tên đăng nhập hoặc mật khẩu không đúng."; ô mật khẩu bị xoá trắng.</td></tr>
+      <tr><td>TC-37</td><td>F14</td><td>Nhập sai 5 lần liên tiếp. Lần thứ 6 nhập đúng.</td><td>Từ lần thứ 5 báo "Sai quá nhiều lần. Thử lại sau 15 phút."; lần thứ 6 dù đúng vẫn bị từ chối. Sau 15 phút đăng nhập lại được.</td></tr>
+      <tr><td>TC-38</td><td>F14, G14</td><td>Đăng nhập, bấm "Đăng xuất", rồi bấm nút Quay lại của trình duyệt. Đăng nhập lại, khởi động lại máy chủ, tải lại trang.</td><td>Sau đăng xuất không xem lại được danh sách. Sau khi máy chủ khởi động lại phải đăng nhập lại; dữ liệu người chơi còn nguyên.</td></tr>
+      <tr><td>TC-39</td><td>F14</td><td>Chạy máy chủ không đặt <code>ADMIN_PASSWORD</code>; rồi đặt mật khẩu 5 ký tự. Thử đăng nhập, kể cả với mật khẩu rỗng.</td><td>Không đăng nhập được bằng bất kỳ giá trị nào. Nhật ký máy chủ có dòng cảnh báo và không in mật khẩu. Game và đăng ký vẫn chạy.</td></tr>
+      <tr><td>TC-40</td><td>F15</td><td>Với 120+ người chơi: xem trang 1, sang trang 2, tới trang cuối. Đăng ký thêm một người rồi tải lại.</td><td>Mỗi trang tối đa 50 dòng; tổng số đúng; không dòng nào lặp hay sót giữa các trang; người mới nhất đứng đầu trang 1. Thời điểm hiện theo giờ Việt Nam.</td></tr>
+      <tr><td>TC-41</td><td>F15</td><td>Đổi thứ tự sang "Điểm cao nhất". Với volume trống: mở danh sách.</td><td>Điểm giảm dần; hai người bằng điểm thì ai đăng ký trước đứng trên. Danh sách trống hiện "Chưa có người chơi nào."</td></tr>
+      <tr><td>TC-42</td><td>F16</td><td>Tìm lần lượt: <code>nguyen</code>; <code>NGUYỄN</code>; <code>duc dung</code>; <code>@example.com</code>.</td><td><code>nguyen</code> và <code>NGUYỄN</code> cho cùng kết quả, có "Nguyễn Văn An", không có "Ngô Uyên". <code>duc dung</code> ra "Đỗ Đức Dũng". Miền email ra đúng những người thuộc miền đó. Dòng "Tìm thấy N người chơi" khớp số dòng.</td></tr>
+      <tr><td>TC-43</td><td>F16</td><td>Tìm <code>0912 345</code>; <code>0912345</code>; <code>+84912345</code>.</td><td>Ba cách cho cùng kết quả: những người có số chứa <code>0912345</code>.</td></tr>
+      <tr><td>TC-44</td><td>F16</td><td>Tìm <code>zzzz</code>; tìm <code>%</code>; tìm <code>' OR 1=1 --</code>; rồi xoá trắng ô tìm. Tìm một từ có trên 50 kết quả rồi sang trang 2.</td><td>Ba từ khoá đầu hiện "Không tìm thấy ai khớp với …", không lỗi, không trả về toàn bộ danh sách. Xoá trắng thì về danh sách đầy đủ. Sang trang vẫn giữ từ khoá.</td></tr>
+      <tr><td>TC-45</td><td>F17</td><td>Bấm "Xoá" ở một dòng, rồi bấm "Huỷ". Làm lại, lần này bấm Esc. Làm lại, bấm Enter ngay khi hộp vừa mở.</td><td>Hộp xác nhận ghi đúng họ tên và email của dòng đó. Cả ba lần không có gì bị xoá.</td></tr>
+      <tr><td>TC-46</td><td>F17, B22</td><td>Đang tìm một từ khoá, ở trang 2: xoá một dòng và xác nhận. Tải lại trang. Rồi xoá hết các dòng của trang cuối.</td><td>Dòng biến mất, tổng số giảm 1, từ khoá và trang giữ nguyên. Tải lại vẫn không còn; tìm theo email đó không ra. Trang cuối hết dòng thì lùi về trang trước.</td></tr>
+      <tr><td>TC-47</td><td>F18</td><td>Ô tìm trống, bấm "Xuất CSV". Mở file bằng trình soạn văn bản.</td><td>Tên file dạng <code>nguoi-choi-NNNNTTNN-GGPP.csv</code>. Dòng đầu là tiêu đề 6 cột. Số dòng dữ liệu bằng tổng số người chơi (không phải 50). Thứ tự giống trên bảng.</td></tr>
+      <tr><td>TC-48</td><td>F18, CSV</td><td>Mở file ở TC-47 bằng Excel (bấm đúp) và bằng Google Sheets.</td><td>Tiếng Việt có dấu hiện đúng ở cả hai; mỗi giá trị nằm đúng cột. Google Sheets giữ số 0 đầu của số điện thoại. Excel bấm đúp có thể ẩn số 0 đầu: đây là hành vi đã ghi nhận ở trang 04, không tính là lỗi.</td></tr>
+      <tr><td>TC-49</td><td>F18</td><td>Tìm <code>nguyen</code>, chọn xếp theo điểm, bấm "Xuất CSV". Rồi tìm <code>zzzz</code> và xuất.</td><td>Nút ghi số dòng sẽ xuất. File thứ nhất chỉ có những người khớp, theo điểm giảm dần. File thứ hai chỉ có dòng tiêu đề.</td></tr>
+      <tr><td>TC-50</td><td>F18, B25</td><td>Chèn thẳng vào database một dòng có họ tên <code>=1+1</code> và một dòng có họ tên chứa dấu phẩy và nháy kép. Xuất CSV, mở bằng Excel.</td><td>Ô <code>=1+1</code> hiện nguyên chữ, không hiện <code>2</code>. Dòng có dấu phẩy và nháy kép không bị lệch cột.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="test-may-chu">
+    <h2>Ca test · Gọi thẳng máy chủ</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mã</th><th>Liên quan</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th></tr>
+      <tr><td>TC-51</td><td>F14</td><td>Không có cookie phiên, gọi: <code>GET /admin/api/nguoi-choi</code>, <code>GET /admin/api/xuat-csv</code>, <code>DELETE /admin/api/nguoi-choi/1</code>.</td><td>Cả ba trả 401, không kèm dữ liệu người chơi; không có gì bị xoá.</td></tr>
+      <tr><td>TC-52</td><td>F14</td><td>Đăng nhập, xem cookie phiên trong công cụ nhà phát triển. Thử đọc <code>document.cookie</code> ở Console.</td><td>Cookie có <code>HttpOnly</code>, <code>SameSite=Strict</code>, <code>Path=/admin</code>, hạn khoảng 8 giờ. <code>document.cookie</code> không thấy cookie phiên.</td></tr>
+      <tr><td>TC-53</td><td>F14, B24</td><td>Đăng nhập, xoá cookie phiên bằng tay (giả làm hết hạn), rồi bấm "Xoá" một dòng và bấm "Xuất CSV".</td><td>Không xoá, không tải file; trang về màn Đăng nhập với dòng "Phiên đã hết hạn, đăng nhập lại nhé."</td></tr>
+      <tr><td>TC-54</td><td>F11, B14</td><td>Gửi thẳng <code>POST /api/dang-ky</code> với email sai dạng; với thiếu trường; với thân không phải JSON; với thân lớn hơn 10 KB.</td><td>Đều trả 400; hai trường hợp đầu có tên ô sai. Database không có dòng mới.</td></tr>
+      <tr><td>TC-55</td><td>B10, B11</td><td>Gửi 10 yêu cầu <code>POST /api/dang-ky</code> cùng một email mới, cùng lúc.</td><td>Database có đúng một dòng cho email đó; cả 10 câu trả lời có cùng một <code>ma</code>; không câu nào trả 500.</td></tr>
+      <tr><td>TC-56</td><td>F13, B20</td><td>Gửi <code>POST /api/luot-choi</code> với <code>diem</code> là 34; -1; 2.5; <code>"abc"</code>; và với <code>ma</code> không tồn tại.</td><td>Bốn trường hợp đầu trả 400, cái cuối trả 404. Điểm và số lượt trong database không đổi.</td></tr>
+      <tr><td>TC-57</td><td>F12</td><td>Xem câu trả lời của <code>/api/dang-ky</code> (với email đã có) và <code>/api/kiem-tra</code> trong tab Network.</td><td>Chỉ có <code>ma</code> và <code>diemCaoNhat</code>. Không có họ tên, số điện thoại hay <code>id</code> của hồ sơ cũ.</td></tr>
+      <tr><td>TC-58</td><td>Trang 04, API</td><td>Đăng ký một người có họ tên hợp lệ. Chèn thẳng vào database một dòng có họ tên <code>&lt;img src=x onerror=alert(1)&gt;</code>. Mở danh sách admin và hộp xác nhận xoá của dòng đó.</td><td>Họ tên hiện nguyên dạng chữ; không có hộp thoại nào bật lên; Console không có lỗi.</td></tr>
+      <tr><td>TC-59</td><td>Giới hạn gửi</td><td>Gửi 61 yêu cầu đăng ký trong dưới 10 phút từ một máy. Gửi 31 yêu cầu <code>/api/luot-choi</code> của một người trong một phút.</td><td>Yêu cầu vượt giới hạn trả 429. Hết khoảng thời gian thì gửi lại được.</td></tr>
+      <tr><td>TC-60</td><td>G8</td><td>Đăng ký vài người. Chạy <code>docker compose down</code> rồi <code>docker compose up -d --build</code>.</td><td>Danh sách người chơi và điểm còn nguyên. Kiểm tra thêm: file <code>.env</code> và mã nguồn máy chủ không tải được qua bất kỳ địa chỉ nào; cổng database không mở ra ngoài máy.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="test-ui-mo-rong">
+    <h2>Kiểm giao diện · mở rộng</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mã</th><th>Kiểm gì</th><th>Kết quả mong đợi</th></tr>
+      <tr><td>UI-06</td><td>Màn Đăng ký ở 360 px, trên điện thoại thật</td><td>Ba ô và nút nằm gọn bề ngang. Bấm vào ô không làm trang tự phóng to. Bàn phím đúng loại: chữ, email, số.</td></tr>
+      <tr><td>UI-07</td><td>Bàn phím điện thoại bật lên ở ô Số điện thoại</td><td>Ô đang gõ và dòng lỗi của nó vẫn nhìn thấy; cuộn được tới nút "Tiếp tục".</td></tr>
+      <tr><td>UI-08</td><td>Họ tên dài 60 ký tự ở lời chào</td><td>Cắt bằng "…" trên một dòng; nút "Bắt đầu" không bị đẩy lệch.</td></tr>
+      <tr><td>UI-09</td><td>Chỉ dùng bàn phím ở màn Đăng ký và trang admin</td><td>Tab đi đúng thứ tự, thấy rõ ô đang được chọn, Enter gửi form, Esc đóng hộp xác nhận xoá.</td></tr>
+      <tr><td>UI-10</td><td>Trình đọc màn hình ở màn Đăng ký có lỗi</td><td>Đọc được nhãn từng ô và câu lỗi đi kèm ô đó.</td></tr>
+      <tr><td>UI-11</td><td>Chế độ tối ở màn Đăng ký và trang admin</td><td>Chữ, viền ô, viền lỗi đỏ, nút "Xoá" đều đọc rõ.</td></tr>
+      <tr><td>UI-12</td><td>Trang admin ở 1280 px và 768 px, có họ tên và email rất dài</td><td>Ở 1280 px bảng không cuộn ngang. Ở 768 px chỉ khung bảng cuộn ngang, trang thì không. Nội dung dài không làm vỡ cột.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="nghiem-thu-mo-rong">
+    <h2>Điều kiện nghiệm thu · mở rộng</h2>
+    <ul>
+      <li>TC-21 → TC-60 đạt trên Chrome máy tính; các ca phía người chơi đạt thêm trên Safari, Firefox và ít nhất một điện thoại thật theo ma trận bổ sung.</li>
+      <li>UI-06 → UI-12 đạt.</li>
+      <li>TC-01 → TC-09 và TC-11 → TC-20 chạy lại qua địa chỉ máy chủ vẫn đạt.</li>
+      <li>Không ca nào trong TC-51 → TC-58 lộ dữ liệu người chơi cho người chưa đăng nhập.</li>
+      <li>Nhật ký máy chủ không chứa mật khẩu admin, mã <code>ma</code> của người chơi, hay nội dung form đăng ký.</li>
+      <li>Sau khi test xong, xoá volume dữ liệu test; không mang dữ liệu giả sang bản chạy thật.</li>
+    </ul>
+    <h3>Chưa được test trong kế hoạch này</h3>
+    <ul>
+      <li>Tải lớn (hàng nghìn người đăng ký cùng lúc) và danh sách trên vài chục nghìn dòng.</li>
+      <li>Chạy sau HTTPS và sau máy chủ trung gian (khi đó "địa chỉ mạng" dùng để giới hạn số lần gửi cần được cấu hình lại).</li>
+      <li>Sao lưu và khôi phục database.</li>
+    </ul>
+  </section>
+
+  <nav class="pager">
+    <a href="04-quy-tac-du-lieu.html"><small>Trước</small>← 04 · Quy tắc &amp; dữ liệu</a>
+    <a href="index.html"><small>Về</small>Mục lục</a>
+  </nav>
+</main>
+</body>
+</html>

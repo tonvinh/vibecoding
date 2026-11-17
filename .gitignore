@@ -1,0 +1,23 @@
+# Phụ thuộc Node.js
+node_modules/
+
+# Log
+*.log
+npm-debug.log*
+
+# Biến môi trường / bí mật
+.env
+.env.*
+!.env.example
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Cấu hình cá nhân của Claude Code
+.claude/settings.local.json

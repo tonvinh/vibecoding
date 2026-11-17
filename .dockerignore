@@ -1,0 +1,20 @@
+# Image chỉ cần: package.json, server.js, app/, design/
+.git
+.gitignore
+.claude
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+docs
+README.md
+YEU-CAU.md
+
+node_modules
+*.log
+.env
+.env.*
+.DS_Store
+**/.DS_Store
+.idea
+.vscode

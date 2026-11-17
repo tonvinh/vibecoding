@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 · Quy tắc &amp; dữ liệu — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-brand" href="index.html">Đập Chuột · Tài liệu</a>
+  <div class="nav-links">
+    <a href="index.html">Mục lục</a>
+    <a href="01-tong-quan.html">Tổng quan</a>
+    <a href="02-chuc-nang.html">Chức năng</a>
+    <a href="03-man-hinh.html">Màn hình</a>
+    <a href="04-quy-tac-du-lieu.html" aria-current="page">Quy tắc &amp; dữ liệu</a>
+    <a href="05-ke-hoach-test.html">Kế hoạch test</a>
+  </div>
+</div></nav>
+
+<main class="container">
+  <header class="page-head">
+    <p class="eyebrow">04</p>
+    <h1>Quy tắc &amp; dữ liệu</h1>
+    <p class="lead">Thông số, trạng thái, dòng thời gian và cách xử lý các trường hợp biên. Đây là trang người viết code cần đọc kỹ nhất.</p>
+  </header>
+
+  <section>
+    <h2>Thông số</h2>
+    <p>Tất cả đặt thành hằng số ở một chỗ trong code, không rải số trong logic.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Tên hằng</th><th>Giá trị</th><th>Ý nghĩa</th><th>Nguồn</th></tr>
+      <tr><td><code>SO_O</code></td><td class="num">9</td><td>Số ô của lưới (3×3)</td><td>L1</td></tr>
+      <tr><td><code>THOI_LUONG_LUOT</code></td><td class="num">10 000 ms</td><td>Độ dài một lượt</td><td>L2</td></tr>
+      <tr><td><code>THOI_GIAN_HIEN</code></td><td class="num">800 ms</td><td>Chuột ở lại nếu không bị đập</td><td>L4</td></tr>
+      <tr><td><code>KHOANG_NGHI</code></td><td class="num">300 ms</td><td>Bảng trống giữa hai chuột, và trước con đầu tiên</td><td>L5, G2</td></tr>
+      <tr><td><code>HIEU_UNG_DAP</code></td><td class="num">150 ms</td><td>Thời gian hiện hình "bị đập"</td><td>Mục 3</td></tr>
+      <tr><td><code>NGUONG_CANH_BAO</code></td><td class="num">3 giây</td><td>Đồng hồ đổi đỏ khi số hiển thị ≤ giá trị này</td><td>Mục 3</td></tr>
+      <tr><td><code>DIEM_MOI_CHUOT</code></td><td class="num">1</td><td>Điểm cho mỗi lần đập trúng</td><td>Mục 2</td></tr>
+      <tr><td><code>KHOA_NUT_CHOI_LAI</code></td><td class="num">500 ms</td><td>Nút "Chơi lại" chưa nhận bấm ngay sau khi hết giờ</td><td>G7</td></tr>
+      <tr><td><code>KHOA_LUU_TRU</code></td><td class="num"><code>"dap-chuot:diem-cao-nhat"</code></td><td>Khoá trong localStorage</td><td>Mục 2</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Trạng thái của game</h2>
+    <div class="flow">
+      <span class="state">BAT_DAU</span><span class="arrow">bấm "Bắt đầu" →</span>
+      <span class="state">DANG_CHOI</span><span class="arrow">đủ 10 000 ms →</span>
+      <span class="state">KET_THUC</span><span class="arrow">bấm "Chơi lại" → DANG_CHOI</span>
+    </div>
+    <div class="table-wrap"><table>
+      <tr><th>Trạng thái</th><th>Màn hình</th><th>Bấm vào lưới</th><th>Hẹn giờ đang chạy</th></tr>
+      <tr><td><code>BAT_DAU</code></td><td>Bắt đầu</td><td>Lưới không hiện</td><td>Không có</td></tr>
+      <tr><td><code>DANG_CHOI</code></td><td>Đang chơi</td><td>Được xử lý</td><td>Đồng hồ lượt + một hẹn giờ của chuột</td></tr>
+      <tr><td><code>KET_THUC</code></td><td>Kết thúc</td><td>Bị bỏ qua</td><td>Không có (đã huỷ hết)</td></tr>
+    </table></div>
+    <p>Không có đường quay về <code>BAT_DAU</code> ngoài việc tải lại trang.</p>
+  </section>
+
+  <section>
+    <h2>Trạng thái của bảng</h2>
+    <div class="flow">
+      <span class="state">NGHI</span><span class="arrow">sau 300 ms →</span>
+      <span class="state">CO_CHUOT</span><span class="arrow">bị bấm trúng, hoặc đủ 800 ms →</span>
+      <span class="state">NGHI</span>
+    </div>
+    <ul>
+      <li>Bảng chỉ ở một trong hai trạng thái, nên không thể có 2 chuột cùng lúc (L3).</li>
+      <li>Khi vào <code>CO_CHUOT</code>: chọn ô ngẫu nhiên khác <code>oVuaXong</code>, ghi lại ô đó.</li>
+      <li>Khi rời <code>CO_CHUOT</code> (vì bất kỳ lý do nào): <code>oVuaXong</code> = ô vừa dùng, huỷ hẹn giờ 800 ms nếu còn, đặt hẹn giờ 300 ms.</li>
+      <li>Hình "bị đập" 150 ms chỉ là hiển thị, nằm chồng lên khoảng nghỉ 300 ms. Về mặt logic, ô đã trống ngay khi bị bấm trúng.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Dòng thời gian mẫu</h2>
+    <p>Mốc thời gian tính bằng giây kể từ lúc bấm "Bắt đầu".</p>
+    <div class="table-wrap"><table>
+      <tr><th>Mốc</th><th>Sự kiện</th><th>Điểm</th></tr>
+      <tr><td class="num">0,00</td><td>Bấm "Bắt đầu". Bảng trống, đồng hồ hiện 10.</td><td class="num">0</td></tr>
+      <tr><td class="num">0,30</td><td>Chuột 1 hiện ở ô 4.</td><td class="num">0</td></tr>
+      <tr><td class="num">0,75</td><td>Bấm trúng ô 4. Chuột mất, bắt đầu nghỉ.</td><td class="num">1</td></tr>
+      <tr><td class="num">1,05</td><td>Chuột 2 hiện (không phải ô 4), giả sử ô 7.</td><td class="num">1</td></tr>
+      <tr><td class="num">1,85</td><td>Không ai bấm: chuột 2 tự biến mất.</td><td class="num">1</td></tr>
+      <tr><td class="num">2,15</td><td>Chuột 3 hiện (không phải ô 7; được phép quay lại ô 4).</td><td class="num">1</td></tr>
+      <tr><td class="num">…</td><td>…</td><td class="num">…</td></tr>
+      <tr><td class="num">9,60</td><td>Chuột cuối hiện.</td><td class="num">n</td></tr>
+      <tr><td class="num">10,00</td><td>Hết giờ: chuột cuối biến mất dù mới hiện 0,4 giây. Sang màn Kết thúc.</td><td class="num">n</td></tr>
+    </table></div>
+    <h3>Hai con số dùng để kiểm tra</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Cách chơi</th><th>Chuột hiện ở các mốc</th><th>Số chuột trong lượt</th></tr>
+      <tr><td>Không bấm gì</td><td>0,3 · 1,4 · 2,5 · … · 9,1 (cách nhau 1,1 giây)</td><td class="num">9</td></tr>
+      <tr><td>Đập tức thì mọi con (lý thuyết)</td><td>0,3 · 0,6 · 0,9 · … · 9,9 (cách nhau 0,3 giây)</td><td class="num">33</td></tr>
+    </table></div>
+    <p>Vậy điểm của một lượt luôn nằm trong khoảng 0–33. Người thật thường đạt khoảng 10–18.</p>
+  </section>
+
+  <section>
+    <h2>Trường hợp biên</h2>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Tình huống</th><th>Cách xử lý</th></tr>
+      <tr><td>B1</td><td>Bấm trúng đúng lúc chuột sắp hết 800 ms</td><td>So theo thời điểm bấm: bấm trước mốc hết hạn thì tính điểm. Nếu hẹn giờ biến mất đã chạy trước, lần bấm rơi vào ô trống, 0 điểm.</td></tr>
+      <tr><td>B2</td><td>Bấm trúng đúng lúc hết 10 giây</td><td>Lần bấm chỉ tính khi game còn ở <code>DANG_CHOI</code>. Sau khi đã chuyển sang <code>KET_THUC</code> thì bỏ qua.</td></tr>
+      <tr><td>B3</td><td>Đến hạn sinh chuột đúng mốc 10 giây hoặc muộn hơn</td><td>Không sinh.</td></tr>
+      <tr><td>B4</td><td>Bấm hai lần rất nhanh vào cùng một con chuột</td><td>Lần đầu +1 và ô chuyển sang trống; lần hai là bấm ô trống, 0 điểm.</td></tr>
+      <tr><td>B5</td><td>Hai ngón chạm cùng lúc, một trúng một trượt</td><td>Xử lý lần lượt từng lần chạm; kết quả +1.</td></tr>
+      <tr><td>B6</td><td>Rời tab giữa lượt rồi quay lại</td><td>Thời gian vẫn trôi theo đồng hồ thực. Quay lại sau mốc 10 giây thì thấy ngay màn Kết thúc. <span class="tag warn">Giả định G4</span></td></tr>
+      <tr><td>B7</td><td>Bấm "Chơi lại" nhiều lần liên tiếp</td><td>Chỉ lần đầu có tác dụng; không tạo hai lượt chạy song song.</td></tr>
+      <tr><td>B8</td><td>Điểm bằng đúng kỷ lục cũ</td><td>Không ghi lại, không hiện "Kỷ lục mới!". <span class="tag warn">Giả định G3</span></td></tr>
+      <tr><td>B9</td><td>Tải lại trang giữa lượt</td><td>Lượt đang chơi mất, không lưu gì; về màn Bắt đầu với kỷ lục cũ.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Dữ liệu trong lúc chạy</h2>
+    <p>Chỉ nằm trong bộ nhớ, mất khi tải lại trang.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Tên</th><th>Kiểu</th><th>Giá trị đầu lượt</th><th>Ý nghĩa</th></tr>
+      <tr><td><code>trangThai</code></td><td>chuỗi</td><td><code>DANG_CHOI</code></td><td><code>BAT_DAU</code> | <code>DANG_CHOI</code> | <code>KET_THUC</code></td></tr>
+      <tr><td><code>diem</code></td><td>số nguyên ≥ 0</td><td class="num">0</td><td>Điểm lượt hiện tại</td></tr>
+      <tr><td><code>mocBatDau</code></td><td>mốc thời gian (ms)</td><td>thời điểm bấm</td><td>Dùng để tính thời gian còn lại</td></tr>
+      <tr><td><code>oCoChuot</code></td><td>0–8 hoặc rỗng</td><td>rỗng</td><td>Ô đang có chuột</td></tr>
+      <tr><td><code>oVuaXong</code></td><td>0–8 hoặc rỗng</td><td>rỗng</td><td>Ô của con chuột liền trước (L6)</td></tr>
+      <tr><td><code>diemCaoNhat</code></td><td>số nguyên ≥ 0</td><td>đọc từ lưu trữ</td><td>Kỷ lục trên trình duyệt này</td></tr>
+    </table></div>
+    <p>Thời gian còn lại không lưu riêng mà luôn tính từ <code>mocBatDau</code>:</p>
+<pre><code>conLaiMs  = max(0, 10000 − (bayGio − mocBatDau))
+soHienThi = lamTronLen(conLaiMs / 1000)     // 10, 9, …, 1, rồi 0 khi hết giờ</code></pre>
+    <p><code>bayGio</code> lấy từ đồng hồ đơn điệu của trình duyệt (<code>performance.now()</code>), không bị ảnh hưởng khi người dùng chỉnh giờ máy.</p>
+  </section>
+
+  <section>
+    <h2>Dữ liệu lưu trên trình duyệt</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Khoá</th><th>Giá trị</th><th>Ghi khi nào</th><th>Đọc khi nào</th></tr>
+      <tr><td><code>dap-chuot:diem-cao-nhat</code></td><td>Chuỗi số nguyên, ví dụ <code>"14"</code></td><td>Cuối lượt, chỉ khi điểm &gt; kỷ lục cũ</td><td>Một lần lúc mở trang</td></tr>
+    </table></div>
+    <h3>Quy tắc đọc</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Giá trị đọc được</th><th>Kết quả</th></tr>
+      <tr><td>Không có khoá</td><td class="num">0</td></tr>
+      <tr><td>Số nguyên ≥ 0, ví dụ <code>"14"</code></td><td class="num">14</td></tr>
+      <tr><td>Không phải số, số âm, số lẻ, rỗng (<code>"abc"</code>, <code>"-3"</code>, <code>"2.5"</code>, <code>""</code>)</td><td class="num">0</td></tr>
+      <tr><td>Trình duyệt chặn lưu trữ (báo lỗi khi đọc hoặc ghi)</td><td>0, game vẫn chạy, kỷ lục chỉ giữ trong bộ nhớ</td></tr>
+    </table></div>
+    <div class="note"><b>Lưu ý khi mở bằng file://</b>Mỗi trình duyệt cấp vùng lưu trữ riêng cho trang <code>file://</code>, và một số trình duyệt gắn nó với đường dẫn file. Đổi tên hoặc chuyển file sang thư mục khác có thể làm kỷ lục về 0. Đây là hành vi của trình duyệt, không phải lỗi của game.</div>
+  </section>
+
+  <section id="mo-rong">
+    <h2>Mở rộng · Đăng ký người chơi và trang admin</h2>
+    <p>Quy tắc và dữ liệu cho các chức năng F10–F18. Từ đây game có thêm phần chạy trên máy chủ: database, các địa chỉ API và phiên đăng nhập admin. Tên trong các bảng dưới đây là đề xuất để người viết code dùng thống nhất.</p>
+    <h3>Thông số mới</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Tên hằng</th><th>Giá trị</th><th>Ý nghĩa</th><th>Nguồn</th></tr>
+      <tr><td><code>HO_TEN_TOI_THIEU</code> / <code>HO_TEN_TOI_DA</code></td><td class="num">2 / 60 ký tự</td><td>Độ dài họ tên sau khi chuẩn hoá</td><td>F11</td></tr>
+      <tr><td><code>EMAIL_TOI_DA</code></td><td class="num">254 ký tự</td><td>Độ dài email</td><td>F11</td></tr>
+      <tr><td><code>DIEM_TOI_DA</code></td><td class="num">33</td><td>Điểm lớn nhất máy chủ chấp nhận cho một lượt</td><td>F13</td></tr>
+      <tr><td><code>GIOI_HAN_DANG_KY</code></td><td class="num">60 lần / 10 phút</td><td>Số lần gửi form đăng ký từ một địa chỉ mạng</td><td>F10</td></tr>
+      <tr><td><code>GIOI_HAN_GUI_DIEM</code></td><td class="num">30 lần / phút</td><td>Số lần gửi điểm của một người chơi</td><td>F13</td></tr>
+      <tr><td><code>SO_LAN_SAI_TOI_DA</code></td><td class="num">5 lần / 15 phút</td><td>Đăng nhập admin sai từ một địa chỉ mạng trước khi bị khoá</td><td>F14</td></tr>
+      <tr><td><code>THOI_GIAN_KHOA</code></td><td class="num">15 phút</td><td>Thời gian khoá đăng nhập</td><td>F14</td></tr>
+      <tr><td><code>HAN_PHIEN_ADMIN</code></td><td class="num">8 giờ</td><td>Phiên đăng nhập admin hết hạn</td><td>F14</td></tr>
+      <tr><td><code>MAT_KHAU_TOI_THIEU</code></td><td class="num">8 ký tự</td><td><code>ADMIN_PASSWORD</code> ngắn hơn thì coi như chưa đặt</td><td>F14</td></tr>
+      <tr><td><code>SO_DONG_MOI_TRANG</code></td><td class="num">50</td><td>Số dòng một trang ở danh sách admin</td><td>F15</td></tr>
+      <tr><td><code>TRE_TIM_KIEM</code></td><td class="num">300 ms</td><td>Chờ sau khi ngừng gõ rồi mới tìm</td><td>F16</td></tr>
+      <tr><td><code>TU_KHOA_TOI_DA</code></td><td class="num">100 ký tự</td><td>Độ dài từ khoá tìm kiếm</td><td>F16</td></tr>
+      <tr><td><code>KICH_THUOC_GUI_TOI_DA</code></td><td class="num">10 KB</td><td>Kích thước tối đa của một yêu cầu gửi lên máy chủ</td><td>—</td></tr>
+    </table></div>
+  </section>
+
+  <section id="trang-thai-mo-rong">
+    <h2>Trạng thái của game · mở rộng</h2>
+    <div class="flow">
+      <span class="state">DANG_KY</span><span class="arrow">đăng ký thành công →</span>
+      <span class="state">BAT_DAU</span><span class="arrow">bấm "Bắt đầu" →</span>
+      <span class="state">DANG_CHOI</span><span class="arrow">đủ 10 000 ms →</span>
+      <span class="state">KET_THUC</span><span class="arrow">bấm "Chơi lại" → DANG_CHOI</span>
+    </div>
+    <div class="table-wrap"><table>
+      <tr><th>Từ</th><th>Sự kiện</th><th>Đến</th></tr>
+      <tr><td>Mở trang</td><td>Trình duyệt chưa nhớ người chơi, hoặc dữ liệu nhớ bị hỏng</td><td><code>DANG_KY</code></td></tr>
+      <tr><td>Mở trang</td><td>Trình duyệt đã nhớ người chơi</td><td><code>BAT_DAU</code> (hiện ngay, rồi kiểm tra với máy chủ ở nền)</td></tr>
+      <tr><td><code>DANG_KY</code></td><td>Máy chủ nhận đăng ký (người mới hoặc người cũ)</td><td><code>BAT_DAU</code></td></tr>
+      <tr><td><code>BAT_DAU</code></td><td>Bấm "Đổi người chơi"</td><td><code>DANG_KY</code></td></tr>
+      <tr><td><code>BAT_DAU</code></td><td>Máy chủ báo người chơi không còn tồn tại</td><td><code>DANG_KY</code> ngay</td></tr>
+      <tr><td><code>DANG_CHOI</code>, <code>KET_THUC</code></td><td>Máy chủ báo người chơi không còn tồn tại</td><td>Chơi hết lượt và xem kết quả như thường; bấm "Chơi lại" thì về <code>DANG_KY</code> thay vì vào lượt mới</td></tr>
+    </table></div>
+    <p>Mất mạng không làm đổi trạng thái: người đã được nhớ vẫn chơi được khi máy chủ không trả lời.</p>
+  </section>
+
+  <section id="kiem-tra-nhap">
+    <h2>Kiểm tra dữ liệu nhập</h2>
+    <p>Mỗi ô được <b>chuẩn hoá trước, kiểm tra sau</b>. Giá trị lưu vào database là giá trị đã chuẩn hoá. Trình duyệt và máy chủ dùng cùng một bộ quy tắc.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Ô</th><th>Chuẩn hoá</th><th>Hợp lệ khi</th></tr>
+      <tr><td>Họ tên</td><td>Bỏ khoảng trắng hai đầu; gộp nhiều khoảng trắng liền nhau thành một; đưa về dạng Unicode dựng sẵn (NFC). Giữ nguyên hoa thường người dùng gõ.</td><td>2–60 ký tự; bắt đầu bằng chữ cái; chỉ gồm chữ cái của mọi ngôn ngữ, khoảng trắng, <code>'</code> <code>-</code> <code>.</code></td></tr>
+      <tr><td>Email</td><td>Bỏ khoảng trắng hai đầu; đổi hết sang chữ thường.</td><td>Tối đa 254 ký tự; đúng một dấu <code>@</code>; phần trước và sau <code>@</code> không rỗng, không có khoảng trắng; phần sau có ít nhất một dấu chấm và không bắt đầu hay kết thúc bằng dấu chấm.</td></tr>
+      <tr><td>Số điện thoại</td><td>Bỏ khoảng trắng, dấu chấm, gạch nối, ngoặc; đầu <code>+84</code> hoặc <code>84</code> (khi theo sau là 9 chữ số) đổi thành <code>0</code>.</td><td>Đúng 10 chữ số, bắt đầu bằng <code>03</code>, <code>05</code>, <code>07</code>, <code>08</code> hoặc <code>09</code>.</td></tr>
+    </table></div>
+    <h3>Ví dụ</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Ô</th><th>Người dùng gõ</th><th>Kết quả</th></tr>
+      <tr><td>Họ tên</td><td><code>"  nguyễn   văn an "</code></td><td>Hợp lệ, lưu <code>nguyễn văn an</code></td></tr>
+      <tr><td>Họ tên</td><td><code>"A"</code>, <code>"An 2"</code>, <code>"&lt;b&gt;An&lt;/b&gt;"</code>, 61 ký tự</td><td>Không hợp lệ</td></tr>
+      <tr><td>Họ tên</td><td><code>"O'Brien"</code>, <code>"Trần-Lê Vy"</code>, <code>"Y Blơ"</code></td><td>Hợp lệ</td></tr>
+      <tr><td>Email</td><td><code>" An@Example.COM "</code></td><td>Hợp lệ, lưu <code>an@example.com</code></td></tr>
+      <tr><td>Email</td><td><code>"an@example"</code>, <code>"an@@example.com"</code>, <code>"an example@x.vn"</code>, <code>"@x.vn"</code></td><td>Không hợp lệ</td></tr>
+      <tr><td>Số điện thoại</td><td><code>"0912 345 678"</code>, <code>"0912.345.678"</code>, <code>"+84 912 345 678"</code>, <code>"84912345678"</code></td><td>Hợp lệ, đều lưu <code>0912345678</code></td></tr>
+      <tr><td>Số điện thoại</td><td><code>"0912"</code>, <code>"0212345678"</code>, <code>"09123456789"</code>, <code>"0912abc678"</code></td><td>Không hợp lệ</td></tr>
+    </table></div>
+    <div class="note"><b>Email không được xác minh</b>Game không gửi thư xác nhận, nên chỉ biết email đúng dạng, không biết email có thật hay có đúng của người nhập không. Xem giả định G9 ở trang Chức năng.</div>
+  </section>
+
+  <section id="database">
+    <h2>Database</h2>
+    <p>PostgreSQL, chạy thành dịch vụ <code>db</code> riêng trong <code>docker-compose.yml</code>; máy chủ game (dịch vụ <code>app</code>) kết nối tới nó qua mạng nội bộ của Docker. Dữ liệu nằm trong volume <code>db-data</code> nên còn nguyên khi dựng lại container. Database không mở cổng ra ngoài máy. <span class="tag warn">Giả định G8</span></p>
+    <h3>Bảng <code>nguoi_choi</code></h3>
+    <div class="table-wrap"><table>
+      <tr><th>Cột</th><th>Kiểu</th><th>Ràng buộc</th><th>Ý nghĩa</th></tr>
+      <tr><td><code>id</code></td><td>số nguyên</td><td>khoá chính, tự tăng; số bị bỏ qua không dùng lại</td><td>Dùng trong trang admin (xoá theo <code>id</code>). Không bao giờ gửi cho người chơi.</td></tr>
+      <tr><td><code>ma</code></td><td>chuỗi 32 ký tự hex</td><td>duy nhất, không rỗng</td><td>Mã bí mật ngẫu nhiên (16 byte từ bộ sinh số an toàn) mà trình duyệt người chơi giữ để gửi điểm.</td></tr>
+      <tr><td><code>ho_ten</code></td><td>chuỗi</td><td>không rỗng</td><td>Họ tên đã chuẩn hoá.</td></tr>
+      <tr><td><code>ho_ten_tim</code></td><td>chuỗi</td><td>không rỗng</td><td>Họ tên viết thường, bỏ dấu, <code>đ</code> → <code>d</code>. Chỉ dùng để tìm kiếm.</td></tr>
+      <tr><td><code>email</code></td><td>chuỗi</td><td>duy nhất, không rỗng</td><td>Email đã chuẩn hoá. Là định danh của người chơi.</td></tr>
+      <tr><td><code>so_dien_thoai</code></td><td>chuỗi 10 chữ số</td><td>không rỗng, có chỉ mục, được trùng</td><td>Lưu dạng chuỗi để giữ số 0 đầu.</td></tr>
+      <tr><td><code>diem_cao_nhat</code></td><td>số nguyên</td><td>0–33, mặc định 0</td><td>Điểm cao nhất trong mọi lượt đã gửi.</td></tr>
+      <tr><td><code>so_luot</code></td><td>số nguyên</td><td>≥ 0, mặc định 0</td><td>Số lượt đã gửi điểm thành công.</td></tr>
+      <tr><td><code>dang_ky_luc</code></td><td>thời điểm có múi giờ (<code>TIMESTAMPTZ</code>)</td><td>không rỗng</td><td>Lúc tạo hồ sơ. Không đổi khi người cũ nhập lại email.</td></tr>
+      <tr><td><code>choi_gan_nhat</code></td><td>thời điểm có múi giờ (<code>TIMESTAMPTZ</code>)</td><td>được rỗng</td><td>Lúc gửi điểm gần nhất. Rỗng nếu chưa chơi lượt nào.</td></tr>
+    </table></div>
+    <ul>
+      <li>Thời điểm lưu theo giờ UTC; chỉ đổi sang giờ Việt Nam (UTC+7) lúc hiển thị và lúc xuất CSV.</li>
+      <li>Mọi câu truy vấn dùng tham số, không ghép chuỗi từ dữ liệu người dùng.</li>
+      <li>Không có bảng tài khoản admin và không có bảng lượt chơi.</li>
+      <li>Máy chủ tự tạo bảng ở lần chạy đầu nếu chưa có. Database chưa sẵn sàng thì máy chủ thử lại, không tự tắt.</li>
+      <li>Mật khẩu admin và database đặt trong file <code>.env</code> cạnh <code>docker-compose.yml</code>; file này không đưa lên git, mẫu ở <code>.env.example</code>.</li>
+    </ul>
+    <h3>Biến môi trường</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Tên</th><th>Bắt buộc</th><th>Ý nghĩa</th></tr>
+      <tr><td><code>ADMIN_USER</code></td><td>Có, nếu muốn dùng trang admin</td><td>Tên đăng nhập admin.</td></tr>
+      <tr><td><code>ADMIN_PASSWORD</code></td><td>Có, nếu muốn dùng trang admin</td><td>Mật khẩu admin, tối thiểu 8 ký tự. Không ghi vào mã nguồn, không ghi vào <code>docker-compose.yml</code> đã đưa lên git, không in ra nhật ký.</td></tr>
+      <tr><td><code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code>, <code>POSTGRES_DB</code></td><td>Có</td><td>Tài khoản, mật khẩu và tên database. Dịch vụ <code>db</code> dùng để tạo database ở lần chạy đầu; dịch vụ <code>app</code> dùng để kết nối. Mật khẩu chỉ được áp dụng lúc tạo volume lần đầu.</td></tr>
+    </table></div>
+    <p>Thiếu <code>ADMIN_USER</code> hoặc <code>ADMIN_PASSWORD</code> (hoặc mật khẩu quá ngắn): game và đăng ký vẫn chạy, mọi lần đăng nhập admin đều bị từ chối, máy chủ ghi một dòng cảnh báo lúc khởi động.</p>
+  </section>
+
+  <section id="luu-tren-trinh-duyet-mo-rong">
+    <h2>Dữ liệu lưu trên trình duyệt · mở rộng</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Khoá</th><th>Giá trị</th><th>Ghi khi nào</th><th>Xoá khi nào</th></tr>
+      <tr><td><code>dap-chuot:nguoi-choi</code></td><td>JSON: <code>{"ma":"…","hoTen":"…"}</code></td><td>Đăng ký thành công</td><td>Bấm "Đổi người chơi"; máy chủ báo người chơi không tồn tại</td></tr>
+      <tr><td><code>dap-chuot:diem-cao-nhat</code> (khoá cũ)</td><td>Chuỗi số nguyên</td><td>Như cũ, và thêm: ngay sau khi đăng ký hoặc kiểm tra, ghi điểm cao nhất máy chủ trả về</td><td>Cùng lúc với khoá <code>nguoi-choi</code></td></tr>
+      <tr><td><code>dap-chuot:diem-cho-gui</code></td><td>Chuỗi số nguyên: điểm lớn nhất trong các lượt chưa gửi được</td><td>Gửi điểm thất bại vì mạng hoặc máy chủ lỗi</td><td>Gửi bù thành công; cùng lúc với khoá <code>nguoi-choi</code></td></tr>
+    </table></div>
+    <ul>
+      <li><code>hoTen</code> lưu trên trình duyệt là tên người dùng vừa gõ, chỉ để hiện lời chào. Máy chủ không trả họ tên, email hay số điện thoại về cho trình duyệt người chơi.</li>
+      <li>Khoá <code>nguoi-choi</code> không đọc được thành JSON, thiếu <code>ma</code>, hoặc <code>ma</code> không phải 32 ký tự hex: coi như chưa đăng ký, xoá cả ba khoá.</li>
+      <li>Điểm cao nhất hiển thị = số lớn nhất trong: bản sao trên trình duyệt, điểm máy chủ trả về, điểm đang chờ gửi.</li>
+      <li>Trình duyệt chặn lưu trữ: đăng ký và chơi vẫn được trong lần mở trang đó; lần mở sau phải nhập lại, và nhờ cùng email nên được nhận là người cũ.</li>
+    </ul>
+  </section>
+
+  <section id="api">
+    <h2>Địa chỉ API</h2>
+    <p>Gửi và nhận JSON, mã hoá UTF-8. Yêu cầu lớn hơn 10 KB hoặc không phải JSON hợp lệ: trả 400.</p>
+    <h3>Phía người chơi</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Địa chỉ</th><th>Gửi lên</th><th>Trả về</th></tr>
+      <tr><td><code>POST /api/dang-ky</code></td><td><code>{hoTen, email, soDienThoai}</code></td><td>201 (người mới) hoặc 200 (email đã có): <code>{ma, diemCaoNhat}</code><br>400: <code>{loi:"DU_LIEU_SAI", truong:{email:"…"}}</code>, liệt kê mọi ô sai<br>429: gửi quá nhiều lần</td></tr>
+      <tr><td><code>POST /api/kiem-tra</code></td><td><code>{ma}</code></td><td>200: <code>{diemCaoNhat}</code><br>404: không có người chơi này</td></tr>
+      <tr><td><code>POST /api/luot-choi</code></td><td><code>{ma, diem}</code></td><td>200: <code>{diemCaoNhat}</code> (sau khi cập nhật)<br>400: <code>diem</code> không phải số nguyên 0–33<br>404: không có người chơi này<br>429: gửi quá nhiều lần</td></tr>
+    </table></div>
+    <ul>
+      <li>Mã <code>ma</code> luôn nằm trong thân yêu cầu, không nằm trên địa chỉ, để không lọt vào nhật ký truy cập của máy chủ.</li>
+      <li><code>/api/dang-ky</code> với email đã có trả về đúng <code>ma</code> của hồ sơ cũ và không sửa dòng nào trong database.</li>
+      <li><code>/api/luot-choi</code> làm ba việc trong một lần ghi: <code>so_luot</code> + 1, <code>diem_cao_nhat</code> = số lớn hơn, <code>choi_gan_nhat</code> = bây giờ.</li>
+      <li>Một lần gửi bù điểm chờ cũng tính là một lượt.</li>
+    </ul>
+    <h3>Phía admin</h3>
+    <p>Trừ địa chỉ đăng nhập, tất cả cần phiên hợp lệ; không có thì trả 401 và không kèm dữ liệu nào.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Địa chỉ</th><th>Gửi lên</th><th>Trả về</th></tr>
+      <tr><td><code>GET /admin</code></td><td>—</td><td>Trang admin (HTML). Chưa đăng nhập thì trang chỉ hiện form đăng nhập.</td></tr>
+      <tr><td><code>POST /admin/api/dang-nhap</code></td><td><code>{tenDangNhap, matKhau}</code></td><td>200 kèm cookie phiên<br>401: sai thông tin<br>429: đang bị khoá</td></tr>
+      <tr><td><code>POST /admin/api/dang-xuat</code></td><td>—</td><td>200, huỷ phiên trên máy chủ và xoá cookie</td></tr>
+      <tr><td><code>GET /admin/api/nguoi-choi</code></td><td><code>?tim=&amp;sapXep=moi-nhat|diem&amp;trang=1</code></td><td>200: <code>{tong, soKhop, trang, soTrang, danhSach:[{id, hoTen, email, soDienThoai, diemCaoNhat, soLuot, dangKyLuc}]}</code></td></tr>
+      <tr><td><code>DELETE /admin/api/nguoi-choi/:id</code></td><td>—</td><td>200: đã xoá<br>404: không có <code>id</code> này (đã bị xoá trước đó)</td></tr>
+      <tr><td><code>GET /admin/api/xuat-csv</code></td><td><code>?tim=&amp;sapXep=</code></td><td>200: file CSV tải về</td></tr>
+    </table></div>
+    <ul>
+      <li><code>trang</code> nhỏ hơn 1 hoặc không phải số: coi là 1. Lớn hơn số trang: trả trang cuối.</li>
+      <li><code>sapXep</code> lạ: coi là <code>moi-nhat</code>. <code>moi-nhat</code> xếp theo <code>dang_ky_luc</code> giảm dần; <code>diem</code> xếp theo <code>diem_cao_nhat</code> giảm dần rồi <code>dang_ky_luc</code> tăng dần.</li>
+      <li>Mọi câu trả lời của admin có <code>Cache-Control: no-store</code>.</li>
+      <li>Trang admin hiển thị dữ liệu người chơi dưới dạng chữ thuần, không bao giờ chèn như HTML.</li>
+    </ul>
+  </section>
+
+  <section id="phien-admin">
+    <h2>Đăng nhập và phiên admin</h2>
+    <div class="flow">
+      <span class="state">CHUA_DANG_NHAP</span><span class="arrow">đúng tên và mật khẩu →</span>
+      <span class="state">DA_DANG_NHAP</span><span class="arrow">đăng xuất, hết 8 giờ, hoặc máy chủ khởi động lại → CHUA_DANG_NHAP</span>
+    </div>
+    <ul>
+      <li>So sánh tên đăng nhập và mật khẩu theo cách có thời gian không đổi, để không lộ thông tin qua thời gian trả lời.</li>
+      <li>Đăng nhập đúng: máy chủ tạo mã phiên ngẫu nhiên (32 byte), giữ trong bộ nhớ kèm thời điểm hết hạn. <span class="tag warn">Giả định G14</span></li>
+      <li>Cookie phiên: <code>HttpOnly</code>, <code>SameSite=Strict</code>, <code>Path=/admin</code>, hạn 8 giờ, thêm <code>Secure</code> khi chạy qua HTTPS. Hạn 8 giờ tính từ lúc đăng nhập, không gia hạn theo thao tác.</li>
+      <li>Đếm lần sai theo địa chỉ mạng. Lần sai thứ 5 trong 15 phút bắt đầu khoá 15 phút; trong lúc khoá, cả mật khẩu đúng cũng bị từ chối. Đăng nhập đúng (khi không bị khoá) xoá bộ đếm.</li>
+      <li>Các thao tác thay đổi dữ liệu (xoá, đăng xuất) chỉ nhận qua <code>DELETE</code>/<code>POST</code>, không qua <code>GET</code>.</li>
+    </ul>
+    <div class="note"><b>Cần HTTPS khi đưa ra ngoài mạng nội bộ</b>Mật khẩu admin và thông tin cá nhân của người chơi đi qua mạng. Chạy thử trên máy mình bằng <code>http://localhost</code> thì được; khi cho người ngoài truy cập, phải đặt máy chủ sau HTTPS.</div>
+  </section>
+
+  <section id="tim-kiem">
+    <h2>Quy tắc tìm kiếm</h2>
+    <ol>
+      <li>Bỏ khoảng trắng hai đầu từ khoá; cắt còn tối đa 100 ký tự. Rỗng thì trả toàn bộ danh sách.</li>
+      <li>Tạo <b>dạng chữ</b>: viết thường, bỏ dấu, <code>đ</code> → <code>d</code>, gộp khoảng trắng.</li>
+      <li>Tạo <b>dạng số</b>: nếu từ khoá chỉ gồm chữ số, khoảng trắng, chấm, gạch và dấu <code>+</code> ở đầu, thì bỏ hết ký tự không phải số và đổi đầu <code>84</code> thành <code>0</code>. Ngược lại không có dạng số.</li>
+      <li>Một người chơi khớp khi <code>ho_ten_tim</code> chứa dạng chữ, <b>hoặc</b> <code>email</code> chứa dạng chữ, <b>hoặc</b> (có dạng số và) <code>so_dien_thoai</code> chứa dạng số.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <tr><th>Từ khoá</th><th>Khớp</th><th>Không khớp</th></tr>
+      <tr><td><code>nguyen</code></td><td>"Nguyễn Văn An"; email <code>nguyen.b@x.vn</code></td><td>"Ngô Uyên"</td></tr>
+      <tr><td><code>NGUYỄN văn</code></td><td>"Nguyễn Văn An"</td><td>"Văn Nguyễn" (tìm theo cụm liền nhau)</td></tr>
+      <tr><td><code>0912 345</code></td><td>Số <code>0912345678</code></td><td>Số <code>0987091234</code></td></tr>
+      <tr><td><code>+84912</code></td><td>Số <code>0912345678</code></td><td>—</td></tr>
+      <tr><td><code>@example.com</code></td><td>Mọi email thuộc miền đó</td><td>—</td></tr>
+      <tr><td><code>%</code> hoặc <code>_</code></td><td>Chỉ dữ liệu thật sự chứa ký tự đó</td><td>Không được hiểu là ký tự đại diện</td></tr>
+    </table></div>
+  </section>
+
+  <section id="csv">
+    <h2>Định dạng CSV</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mục</th><th>Quy định</th></tr>
+      <tr><td>Tên file</td><td><code>nguoi-choi-NNNNTTNN-GGPP.csv</code>, ví dụ <code>nguoi-choi-20261117-0941.csv</code> (giờ Việt Nam)</td></tr>
+      <tr><td>Mã hoá</td><td>UTF-8 có BOM ở đầu file, để Excel đọc đúng tiếng Việt</td></tr>
+      <tr><td>Dấu ngăn cột</td><td>Dấu phẩy</td></tr>
+      <tr><td>Xuống dòng</td><td>CRLF, kể cả sau dòng cuối</td></tr>
+      <tr><td>Dấu nháy</td><td>Mọi ô đều bọc trong nháy kép; nháy kép trong nội dung viết thành hai nháy kép</td></tr>
+      <tr><td>Dòng đầu</td><td><code>"Họ tên","Email","Số điện thoại","Điểm cao nhất","Số lượt chơi","Thời điểm đăng ký"</code></td></tr>
+      <tr><td>Số điện thoại</td><td>10 chữ số liền nhau, giữ số 0 đầu: <code>"0912345678"</code></td></tr>
+      <tr><td>Thời điểm</td><td><code>NNNN-TT-NN GG:PP:GG</code>, giờ Việt Nam, ví dụ <code>"2026-11-17 09:41:05"</code></td></tr>
+      <tr><td>Chặn công thức</td><td>Ô chữ bắt đầu bằng <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, tab hoặc xuống dòng thì thêm một dấu nháy đơn <code>'</code> ở trước, để Excel không chạy nó như công thức</td></tr>
+      <tr><td>Phạm vi</td><td>Mọi dòng khớp từ khoá đang tìm, không phân trang, theo thứ tự đang chọn</td></tr>
+    </table></div>
+    <pre><code>"Họ tên","Email","Số điện thoại","Điểm cao nhất","Số lượt chơi","Thời điểm đăng ký"
+"Nguyễn Văn An","an@example.com","0912345678","14","6","2026-11-17 09:41:05"
+"Trần Thị Bình","binh@example.com","0987654321","11","2","2026-11-17 09:12:40"</code></pre>
+    <div class="note"><b>Số 0 đầu khi mở bằng Excel</b>File luôn chứa đủ số 0 đầu. Nhưng khi bấm đúp để mở, Excel tự coi cột số điện thoại là số và ẩn số 0 đó. Muốn thấy đủ, dùng "Dữ liệu › Từ văn bản/CSV" và chọn kiểu Văn bản cho cột này. Google Sheets và các phần mềm gửi thư hàng loạt đọc đúng. Nếu chủ dự án muốn bấm đúp là thấy đúng, cần đổi sang xuất file <code>.xlsx</code>.</div>
+  </section>
+
+  <section id="bien-mo-rong">
+    <h2>Trường hợp biên · mở rộng</h2>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Tình huống</th><th>Cách xử lý</th></tr>
+      <tr><td>B10</td><td>Bấm "Tiếp tục" hai lần thật nhanh</td><td>Nút khoá sau lần đầu. Nếu vẫn có hai yêu cầu tới máy chủ, ràng buộc duy nhất trên <code>email</code> bảo đảm chỉ một dòng; yêu cầu thứ hai được trả như "email đã có".</td></tr>
+      <tr><td>B11</td><td>Hai máy đăng ký cùng một email cùng lúc</td><td>Như B10: một dòng, cả hai máy nhận cùng một <code>ma</code>.</td></tr>
+      <tr><td>B12</td><td>Email đã có, nhưng họ tên hoặc số điện thoại gõ khác lần đầu</td><td>Vào chơi bằng hồ sơ cũ; database giữ nguyên thông tin cũ (G9). Lời chào trên máy đó hiện tên vừa gõ.</td></tr>
+      <tr><td>B13</td><td>Cùng một email, khác hoa thường hoặc thừa khoảng trắng</td><td>Sau chuẩn hoá là một email: nhận là người cũ.</td></tr>
+      <tr><td>B14</td><td>Trình duyệt kiểm tra sót, dữ liệu sai vẫn tới máy chủ</td><td>Máy chủ trả 400 kèm ô sai; form hiện lỗi đúng dưới ô đó.</td></tr>
+      <tr><td>B15</td><td>Mất mạng lúc gửi điểm cuối lượt</td><td>Màn Kết thúc vẫn hiện bình thường. Ghi <code>diem-cho-gui</code> = số lớn hơn giữa điểm lượt này và giá trị đang chờ. Gửi bù ở lần kết thúc lượt sau hoặc lần mở trang sau.</td></tr>
+      <tr><td>B16</td><td>Nhiều lượt liên tiếp không gửi được</td><td>Chỉ giữ điểm lớn nhất; khi gửi bù được, máy chủ tính là một lượt. <code>so_luot</code> vì thế có thể thấp hơn số lượt thật.</td></tr>
+      <tr><td>B17</td><td>Admin xoá một người đang chơi dở</td><td>Lượt đang chơi tiếp tục tới hết. Gửi điểm nhận 404: trình duyệt xoá ba khoá, sau màn Kết thúc bấm "Chơi lại" thì về màn Đăng ký.</td></tr>
+      <tr><td>B18</td><td>Cùng một người chơi trên hai máy</td><td>Cả hai gửi điểm vào cùng hồ sơ; máy chủ giữ điểm lớn nhất. Máy kia thấy điểm mới ở lần mở trang kế tiếp.</td></tr>
+      <tr><td>B19</td><td>Bấm "Đổi người chơi" khi còn điểm chờ gửi</td><td>Thử gửi bù một lần trước khi xoá; không được thì bỏ điểm đó.</td></tr>
+      <tr><td>B20</td><td>Gửi điểm ngoài khoảng 0–33, số lẻ, hoặc không phải số</td><td>Máy chủ trả 400, không ghi gì.</td></tr>
+      <tr><td>B21</td><td>Admin mở hai tab; xoá ở tab này một người đang hiện ở tab kia</td><td>Tab kia bấm "Xoá" người đó nhận 404: hiện "Người chơi này đã bị xoá", tải lại danh sách.</td></tr>
+      <tr><td>B22</td><td>Xoá dòng cuối cùng của trang cuối</td><td>Danh sách lùi về trang liền trước.</td></tr>
+      <tr><td>B23</td><td>Có người đăng ký mới trong lúc admin đang xem</td><td>Danh sách không tự cập nhật; thấy người mới sau khi tải lại, tìm kiếm hoặc sang trang.</td></tr>
+      <tr><td>B24</td><td>Phiên admin hết hạn đúng lúc bấm "Xuất CSV" hoặc "Xoá"</td><td>Máy chủ trả 401, không xuất và không xoá; trang về màn Đăng nhập.</td></tr>
+      <tr><td>B25</td><td>Họ tên chứa dấu phẩy, nháy kép, hoặc bắt đầu bằng ký tự công thức</td><td>Quy tắc họ tên đã chặn từ lúc đăng ký. CSV vẫn bọc nháy và chặn công thức cho mọi ô, đề phòng dữ liệu vào database bằng đường khác.</td></tr>
+      <tr><td>B26</td><td>Mở game bằng <code>file://</code></td><td>Màn Đăng ký hiện, gửi form báo "Chưa gửi được, thử lại nhé." Không vào được game.</td></tr>
+      <tr><td>B27</td><td>Database không dùng được (dịch vụ <code>db</code> dừng, đang khởi động lại, hết chỗ)</td><td>Máy chủ trả 500 cho yêu cầu cần database, ghi lỗi vào nhật ký, không tự tắt và tự kết nối lại khi database trở lại. Người chơi thấy thông báo như mất mạng.</td></tr>
+    </table></div>
+  </section>
+
+  <nav class="pager">
+    <a href="03-man-hinh.html"><small>Trước</small>← 03 · Màn hình</a>
+    <a href="05-ke-hoach-test.html"><small>Tiếp</small>05 · Kế hoạch test →</a>
+  </nav>
+</main>
+</body>
+</html>

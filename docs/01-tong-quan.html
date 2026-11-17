@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01 · Tổng quan — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-brand" href="index.html">Đập Chuột · Tài liệu</a>
+  <div class="nav-links">
+    <a href="index.html">Mục lục</a>
+    <a href="01-tong-quan.html" aria-current="page">Tổng quan</a>
+    <a href="02-chuc-nang.html">Chức năng</a>
+    <a href="03-man-hinh.html">Màn hình</a>
+    <a href="04-quy-tac-du-lieu.html">Quy tắc &amp; dữ liệu</a>
+    <a href="05-ke-hoach-test.html">Kế hoạch test</a>
+  </div>
+</div></nav>
+
+<main class="container">
+  <header class="page-head">
+    <p class="eyebrow">01</p>
+    <h1>Tổng quan</h1>
+    <p class="lead">Đập Chuột là mini game một màn, chơi trong 10 giây: chuột lần lượt ló lên ở lưới 3×3, bấm trúng được 1 điểm, cố vượt điểm cao nhất của chính mình.</p>
+  </header>
+
+  <section>
+    <h2>Mục tiêu</h2>
+    <ul>
+      <li><b>Chơi ngay:</b> mở một file HTML là chơi được, không cài đặt, không máy chủ, không đăng nhập.</li>
+      <li><b>Một lượt ngắn, dễ chơi lại:</b> 10 giây mỗi lượt, bấm "Chơi lại" là vào lượt mới.</li>
+      <li><b>Công bằng và đoán trước được:</b> mọi thông số thời gian cố định, không có yếu tố may rủi ngoài vị trí chuột.</li>
+      <li><b>Chơi tốt trên cả điện thoại lẫn máy tính:</b> từ màn rộng 360 px trở lên, bấm bằng chuột hoặc ngón tay.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Vòng chơi</h2>
+    <div class="flow">
+      <span class="state">Bắt đầu</span><span class="arrow">bấm "Bắt đầu" →</span>
+      <span class="state">Đang chơi (10 giây)</span><span class="arrow">hết giờ →</span>
+      <span class="state">Kết thúc</span><span class="arrow">bấm "Chơi lại" → quay về Đang chơi</span>
+    </div>
+    <p>Trong lúc chơi, bảng lặp đi lặp lại một nhịp: nghỉ 0,3 giây → chuột hiện ở một ô ngẫu nhiên (khác ô vừa xong) → bị đập, hoặc tự biến mất sau 0,8 giây → nghỉ 0,3 giây.</p>
+  </section>
+
+  <section>
+    <h2>Phạm vi</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Trong phạm vi</th><th>Ngoài phạm vi</th></tr>
+      <tr><td>Lưới 3×3, một chuột mỗi thời điểm</td><td>Nhiều cấp độ khó, tốc độ tăng dần</td></tr>
+      <tr><td>Tính điểm +1 cho mỗi lần đập trúng</td><td>Chuột đặc biệt (cộng hoặc trừ nhiều điểm), trừ điểm khi bấm trượt</td></tr>
+      <tr><td>Đồng hồ đếm ngược 10 giây</td><td>Tạm dừng, chọn thời lượng</td></tr>
+      <tr><td>Điểm cao nhất lưu trên trình duyệt</td><td>Đăng nhập, bảng xếp hạng online, máy chủ</td></tr>
+      <tr><td>Hiệu ứng hình ảnh khi đập trúng và 3 giây cuối</td><td>Âm thanh, rung</td></tr>
+      <tr><td>Click và chạm</td><td>Điều khiển bằng bàn phím hay tay cầm</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Ràng buộc kỹ thuật</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Ràng buộc</th><th>Chi tiết</th></tr>
+      <tr><td>Chạy bằng <code>file://</code></td><td>Mở trực tiếp file HTML, không cần máy chủ hay bước build. Vì vậy không dùng module JS tải qua mạng hay <code>fetch</code> file cục bộ.</td></tr>
+      <tr><td>Không phụ thuộc bên ngoài</td><td>Không thư viện, không CDN, không font tải về. Chơi được khi không có mạng.</td></tr>
+      <tr><td>Trình duyệt</td><td>Chrome, Safari, Firefox bản mới nhất, trên máy tính và điện thoại.</td></tr>
+      <tr><td>Kích thước màn hình</td><td>Rộng từ 360 px. Mỗi ô lưới tối thiểu 80×80 px.</td></tr>
+      <tr><td>Giao diện</td><td>Dùng biến trong <code>design/tokens.css</code>; theo sáng/tối của hệ thống.</td></tr>
+      <tr><td>Lưu trữ</td><td>Chỉ <code>localStorage</code>, một khoá duy nhất cho điểm cao nhất.</td></tr>
+    </table></div>
+  </section>
+
+  <section id="gia-dinh">
+    <h2>Giả định chờ xác nhận</h2>
+    <div class="note"><b>Vì sao có mục này</b>Phần phỏng vấn làm rõ ý tưởng đã được bỏ qua, nên những chỗ <code>YEU-CAU.md</code> chưa nói tới được điền bằng lựa chọn hợp lý nhất. Các trang sau đánh dấu chúng bằng nhãn <span class="tag warn">Giả định</span>. Đổi giả định nào thì sửa ở trang tương ứng.</div>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Giả định</th><th>Lý do chọn</th><th>Ảnh hưởng nếu đổi</th></tr>
+      <tr><td>G1</td><td>Game là bài thực hành nhỏ, người chơi phổ thông, không cần hướng dẫn dài.</td><td>Yêu cầu chỉ có luật tóm tắt 1 dòng ở màn Bắt đầu.</td><td>Nội dung màn Bắt đầu, độ kỹ của kế hoạch test.</td></tr>
+      <tr><td>G2</td><td>Con chuột đầu tiên hiện sau 0,3 giây kể từ lúc bấm "Bắt đầu".</td><td>Dùng lại đúng khoảng nghỉ L5, người chơi kịp đưa mắt từ nút lên lưới.</td><td>Số chuột tối đa trong một lượt (hiện là 33) và ca test đếm chuột.</td></tr>
+      <tr><td>G3</td><td>"Kỷ lục mới!" chỉ hiện khi điểm <b>lớn hơn</b> kỷ lục cũ; bằng thì không. Lượt 0 điểm không bao giờ là kỷ lục.</td><td>Yêu cầu ghi "nếu vượt".</td><td>Điều kiện hiển thị ở màn Kết thúc.</td></tr>
+      <tr><td>G4</td><td>Rời tab hoặc khoá màn hình giữa lượt: đồng hồ vẫn chạy, lượt vẫn kết thúc đúng 10 giây.</td><td>Không có chức năng tạm dừng trong yêu cầu; cách này đơn giản và không gian lận được.</td><td>Cần thêm trạng thái "Tạm dừng" nếu đổi.</td></tr>
+      <tr><td>G5</td><td>Hình chuột dùng emoji 🐭, lúc bị đập đổi thành 💥.</td><td>Không cần file ảnh, vẫn chạy bằng <code>file://</code>.</td><td>Cần thêm thư mục ảnh và bước tải ảnh nếu đổi.</td></tr>
+      <tr><td>G6</td><td>Toàn bộ game nằm trong một file <code>index.html</code> ở thư mục gốc (HTML, CSS, JS thuần), liên kết <code>design/tokens.css</code>.</td><td>Đáp ứng T10 theo cách ít rủi ro nhất.</td><td>Cấu trúc thư mục.</td></tr>
+      <tr><td>G7</td><td>Nút "Chơi lại" chỉ nhận bấm sau khi màn Kết thúc hiện được 0,5 giây.</td><td>Người chơi còn đang bấm dồn dập lúc hết giờ, dễ vô tình vào lượt mới.</td><td>Bỏ thì xoá hằng <code>KHOA_NUT_CHOI_LAI</code> và sửa TC-06.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Thuật ngữ</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Từ</th><th>Nghĩa</th></tr>
+      <tr><td>Lượt</td><td>Một lần chơi 10 giây, từ lúc bấm "Bắt đầu" hoặc "Chơi lại" đến khi hết giờ.</td></tr>
+      <tr><td>Ô (hang)</td><td>Một trong 9 vị trí của lưới, đánh số 0–8 từ trái sang phải, trên xuống dưới.</td></tr>
+      <tr><td>Chuột</td><td>Mục tiêu hiện ra ở một ô. Không nhầm với chuột máy tính (gọi là "click").</td></tr>
+      <tr><td>Bấm</td><td>Một lần click chuột máy tính hoặc một lần chạm ngón tay.</td></tr>
+      <tr><td>Khoảng nghỉ</td><td>0,3 giây bảng trống giữa hai con chuột.</td></tr>
+      <tr><td>Điểm cao nhất</td><td>Điểm lớn nhất từng đạt trên trình duyệt này; còn gọi là kỷ lục.</td></tr>
+    </table></div>
+  </section>
+
+  <nav class="pager">
+    <a href="index.html"><small>Trước</small>Mục lục</a>
+    <a href="02-chuc-nang.html"><small>Tiếp</small>02 · Chức năng →</a>
+  </nav>
+</main>
+</body>
+</html>

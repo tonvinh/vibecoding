@@ -1,0 +1,221 @@
+/* Trang admin — chỉ dùng biến từ /design/tokens.css */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-text);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, p { margin: 0; }
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-heading);
+  font-variant-numeric: tabular-nums;
+}
+[hidden] { display: none !important; }
+.an {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ---------- Nút ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--button-height-md);
+  padding: 8px 20px;
+  font: inherit;
+  line-height: 1.18;
+  white-space: nowrap;
+  color: var(--accent-text);
+  background: var(--accent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              opacity var(--duration-fast) var(--ease-standard);
+}
+.btn:hover { background: var(--accent-hover); }
+.btn:focus-visible, input:focus-visible, select:focus-visible, .nut-xoa-tim:focus-visible {
+  outline: 4px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+.btn[disabled] { opacity: .42; cursor: default; pointer-events: none; }
+.btn-phu {
+  color: var(--text-primary);
+  background: transparent;
+  border-color: var(--border-strong);
+}
+.btn-phu:hover { background: var(--bg-subtle); }
+.btn-nguy-hiem { background: var(--danger); color: var(--color-white); }
+.btn-nguy-hiem:hover { background: var(--danger); opacity: .85; }
+.btn-nho { min-height: var(--button-height-sm); padding: 4px 14px; font-size: var(--text-small); }
+
+/* ---------- Ô nhập ---------- */
+input, select {
+  width: 100%;
+  min-height: var(--input-height);
+  padding: var(--space-2) var(--space-3);
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+label, .o-nhap > span, .o-sap-xep > span {
+  font-size: var(--text-small);
+  letter-spacing: var(--tracking-small);
+  color: var(--text-secondary);
+}
+.loi { color: var(--danger); font-size: var(--text-small); }
+.thong-bao { color: var(--text-secondary); font-size: var(--text-small); }
+
+/* ---------- Màn Đăng nhập ---------- */
+.dang-nhap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+}
+.khung-dang-nhap {
+  width: min(100%, 340px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.khung-dang-nhap h1 { text-align: center; }
+.khung-dang-nhap .btn { align-self: center; margin-top: var(--space-2); }
+.o-nhap { display: flex; flex-direction: column; gap: var(--space-1); }
+
+/* ---------- Màn Danh sách ---------- */
+.danh-sach {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  padding: var(--space-8) var(--gutter) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.dau-trang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.thanh-cong-cu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+.o-tim { flex: 1 1 280px; display: flex; flex-direction: column; gap: var(--space-1); }
+.o-tim-khung { position: relative; }
+.o-tim-khung input { padding-right: 44px; }
+.o-tim-khung input::-webkit-search-cancel-button { display: none; }
+.nut-xoa-tim {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  font: inherit;
+  font-size: var(--text-h5);
+  line-height: 1;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-circle);
+  cursor: pointer;
+}
+.nut-xoa-tim:hover { color: var(--text-primary); background: var(--border-subtle); }
+.o-sap-xep { flex: 0 0 180px; display: flex; flex-direction: column; gap: var(--space-1); }
+.thanh-cong-cu .btn { min-height: var(--input-height); }
+.ket-qua-tim { font-size: var(--text-small); color: var(--text-secondary); }
+
+/* Màn hẹp: chỉ khung bảng cuộn ngang, trang thì không */
+.khung-bang {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+  letter-spacing: var(--tracking-small);
+}
+th, td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-subtle);
+}
+tbody tr:last-child td { border-bottom: 0; }
+th {
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  white-space: nowrap;
+}
+td { overflow-wrap: anywhere; }
+td.ten, td.email { max-width: 260px; }
+td.dien-thoai, td.luc, td.so { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.so { text-align: right; }
+td.thao-tac { text-align: right; white-space: nowrap; }
+.btn-xoa { color: var(--danger); }
+
+.trong {
+  padding: var(--space-12) var(--space-4);
+  text-align: center;
+  color: var(--text-secondary);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-lg);
+}
+
+.phan-trang {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.nut-trang { display: inline-flex; align-items: center; gap: var(--space-3); }
+
+/* ---------- Hộp xác nhận xoá ---------- */
+.hop {
+  width: min(calc(100vw - 2 * var(--gutter)), 420px);
+  padding: var(--space-6);
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+.hop::backdrop { background: rgb(0 0 0 / .45); }
+.hop h2 {
+  font-size: var(--text-h5);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-heading);
+}
+.hop p { margin-top: var(--space-2); color: var(--text-secondary); overflow-wrap: anywhere; }
+.hop-nut { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}
